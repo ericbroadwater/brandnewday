@@ -1,0 +1,1112 @@
+<html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Astranis — Company Overview</title>
+    <!-- === FONTS: Syne (display) + IBM Plex Mono (labels) + IBM Plex Sans (body) === -->
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:wght@300;400;700&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        /* ===========================================
+           CSS CUSTOM PROPERTIES (THEME)
+           Deep Space — Dark navy, cyan accents, orbital geometry
+           =========================================== */
+        :root {
+            /* === COLORS === */
+            --bg-primary:       #060b14;
+            --bg-secondary:     #0d1829;
+            --bg-card:          rgba(255, 255, 255, 0.04);
+            --bg-card-hover:    rgba(255, 255, 255, 0.07);
+            --border-subtle:    rgba(100, 180, 255, 0.1);
+            --border-medium:    rgba(100, 180, 255, 0.2);
+            --text-primary:     #f0f4ff;
+            --text-secondary:   rgba(200, 215, 240, 0.65);
+            --text-muted:       rgba(150, 175, 210, 0.4);
+            --accent-cyan:      #4fc3f7;
+            --accent-cyan-glow: rgba(79, 195, 247, 0.3);
+            --accent-blue:      #1e88e5;
+            --accent-warm:      #e8b86d;
+            /* === TYPOGRAPHY (all clamp-based) === */
+            --font-display:  'Syne', sans-serif;
+            --font-mono:     'IBM Plex Mono', monospace;
+            --font-body:     'IBM Plex Sans', sans-serif;
+            --title-size:    clamp(2.2rem, 6.5vw, 5.5rem);
+            --h2-size:       clamp(1.6rem, 4vw, 3.2rem);
+            --h3-size:       clamp(1.1rem, 2.2vw, 1.75rem);
+            --body-size:     clamp(0.75rem, 1.3vw, 1rem);
+            --small-size:    clamp(0.6rem, 0.9vw, 0.78rem);
+            --mono-size:     clamp(0.55rem, 0.85vw, 0.75rem);
+            /* === SPACING === */
+            --slide-padding: clamp(1.5rem, 5vw, 4.5rem);
+            --content-gap:   clamp(0.75rem, 2vw, 1.75rem);
+            --element-gap:   clamp(0.4rem, 1vw, 0.9rem);
+            /* === ANIMATION === */
+            --ease-expo:     cubic-bezier(0.16, 1, 0.3, 1);
+            --ease-out:      cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            --duration-fast: 0.45s;
+            --duration-mid:  0.7s;
+            --duration-slow: 1.0s;
+        }
+        /* ===========================================
+           RESET & BASE
+           =========================================== */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html {
+            height: 100%;
+            scroll-snap-type: y mandatory;
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+        }
+        body {
+            height: 100%;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            overflow-x: hidden;
+        }
+        /* ===========================================
+           VIEWPORT BASE — Mandatory slide fitting
+           =========================================== */
+        .slide {
+            width: 100vw;
+            height: 100vh;
+            height: 100dvh;
+            overflow: hidden;
+            scroll-snap-align: start;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        .slide-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            max-height: 100%;
+            overflow: hidden;
+            padding: var(--slide-padding);
+        }
+        .card, .container, .content-box {
+            max-width: min(90vw, 1000px);
+            max-height: min(80vh, 700px);
+        }
+        .feature-list, .bullet-list { gap: clamp(0.4rem, 1vh, 1rem); }
+        .feature-list li, .bullet-list li {
+            font-size: var(--body-size);
+            line-height: 1.5;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
+            gap: clamp(0.5rem, 1.5vw, 1rem);
+        }
+        img, .image-container {
+            max-width: 100%;
+            max-height: min(50vh, 400px);
+            object-fit: contain;
+        }
+        /* Responsive breakpoints */
+        @media (max-height: 700px) {
+            :root {
+                --slide-padding: clamp(0.75rem, 3vw, 2rem);
+                --content-gap:   clamp(0.4rem, 1.5vw, 1rem);
+                --title-size:    clamp(1.5rem, 5vw, 3rem);
+                --h2-size:       clamp(1.2rem, 3vw, 2rem);
+            }
+        }
+        @media (max-height: 600px) {
+            :root {
+                --slide-padding: clamp(0.5rem, 2.5vw, 1.5rem);
+                --content-gap:   clamp(0.3rem, 1vw, 0.75rem);
+                --title-size:    clamp(1.1rem, 4vw, 2rem);
+                --body-size:     clamp(0.65rem, 1.1vw, 0.88rem);
+            }
+            .nav-dots, .keyboard-hint, .decorative { display: none; }
+        }
+        @media (max-height: 500px) {
+            :root {
+                --slide-padding: clamp(0.4rem, 2vw, 1rem);
+                --title-size:    clamp(1rem, 3.5vw, 1.5rem);
+                --h2-size:       clamp(0.9rem, 2.5vw, 1.25rem);
+                --body-size:     clamp(0.6rem, 1vw, 0.8rem);
+            }
+        }
+        @media (max-width: 600px) {
+            :root { --title-size: clamp(1.5rem, 7vw, 2.5rem); }
+            .grid { grid-template-columns: 1fr; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.2s !important;
+            }
+            html { scroll-behavior: auto; }
+        }
+        /* ===========================================
+           SHARED AMBIENT BACKGROUND ELEMENTS
+           Reused across all slides for continuity
+           =========================================== */
+        .star-canvas {
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none; z-index: 0;
+        }
+        .grid-bg {
+            position: absolute; inset: 0; pointer-events: none;
+            background-image:
+                linear-gradient(rgba(100, 180, 255, 0.025) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(100, 180, 255, 0.025) 1px, transparent 1px);
+            background-size: clamp(40px, 5vw, 70px) clamp(40px, 5vw, 70px);
+        }
+        .glow-orb {
+            position: absolute; border-radius: 50%; pointer-events: none;
+            filter: blur(clamp(40px, 8vw, 100px));
+        }
+        /* ===========================================
+           GLOBAL ORBIT DECORATIONS
+           =========================================== */
+        .orbit {
+            position: absolute; border-radius: 50%;
+            border: 1px solid var(--border-subtle);
+            pointer-events: none;
+        }
+        .orbit-dot {
+            position: absolute; border-radius: 50%;
+            background: var(--accent-cyan);
+            box-shadow: 0 0 8px 3px var(--accent-cyan-glow);
+        }
+        /* ===========================================
+           REVEAL ANIMATIONS
+           =========================================== */
+        .reveal {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity var(--duration-mid) var(--ease-expo),
+                        transform var(--duration-mid) var(--ease-expo);
+        }
+        .slide.visible .reveal { opacity: 1; transform: translateY(0); }
+        .reveal-left {
+            opacity: 0; transform: translateX(-30px);
+            transition: opacity var(--duration-mid) var(--ease-expo),
+                        transform var(--duration-mid) var(--ease-expo);
+        }
+        .slide.visible .reveal-left { opacity: 1; transform: translateX(0); }
+        .reveal-scale {
+            opacity: 0; transform: scale(0.92);
+            transition: opacity var(--duration-mid) var(--ease-expo),
+                        transform var(--duration-mid) var(--ease-expo);
+        }
+        .slide.visible .reveal-scale { opacity: 1; transform: scale(1); }
+        .stagger > *:nth-child(1) { transition-delay: 0.08s; }
+        .stagger > *:nth-child(2) { transition-delay: 0.18s; }
+        .stagger > *:nth-child(3) { transition-delay: 0.28s; }
+        .stagger > *:nth-child(4) { transition-delay: 0.38s; }
+        .stagger > *:nth-child(5) { transition-delay: 0.48s; }
+        .stagger > *:nth-child(6) { transition-delay: 0.58s; }
+        /* ===========================================
+           TYPOGRAPHY UTILITIES
+           =========================================== */
+        .mono-label {
+            font-family: var(--font-mono); font-weight: 400;
+            font-size: var(--mono-size); letter-spacing: 0.18em;
+            text-transform: uppercase; color: var(--accent-cyan);
+        }
+        .section-title {
+            font-family: var(--font-display); font-weight: 800;
+            font-size: var(--h2-size); color: var(--text-primary);
+            line-height: 1.05; letter-spacing: -0.02em;
+        }
+        .body-text {
+            font-family: var(--font-body); font-weight: 300;
+            font-size: var(--body-size); color: var(--text-secondary);
+            line-height: 1.7;
+        }
+        .accent-text { color: var(--accent-cyan); }
+        .warm-text   { color: var(--accent-warm); }
+        .h-rule {
+            width: clamp(24px, 3.5vw, 44px); height: 1px;
+            background: linear-gradient(90deg, var(--accent-cyan), transparent);
+            margin: var(--element-gap) 0;
+        }
+        /* ===========================================
+           NAVIGATION
+           =========================================== */
+        .progress-bar {
+            position: fixed; top: 0; left: 0;
+            height: 2px; background: var(--accent-cyan);
+            width: 0%; transition: width 0.3s var(--ease-out);
+            z-index: 1000; box-shadow: 0 0 6px var(--accent-cyan-glow);
+        }
+        .nav-dots {
+            position: fixed; right: clamp(12px, 2vw, 22px); top: 50%;
+            transform: translateY(-50%);
+            display: flex; flex-direction: column;
+            gap: clamp(8px, 1.2vh, 14px); z-index: 1000;
+        }
+        .nav-dot {
+            width: 6px; height: 6px; border-radius: 50%;
+            background: var(--text-muted);
+            cursor: pointer; transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+        .nav-dot.active {
+            background: var(--accent-cyan);
+            box-shadow: 0 0 6px var(--accent-cyan-glow);
+            transform: scale(1.4);
+        }
+        .nav-dot:hover { background: rgba(79, 195, 247, 0.5); transform: scale(1.3); }
+        .keyboard-hint {
+            position: fixed; bottom: clamp(12px, 2vh, 20px); right: clamp(12px, 2vw, 20px);
+            font-family: var(--font-mono); font-size: clamp(0.5rem, 0.65vw, 0.6rem);
+            color: var(--text-muted); letter-spacing: 0.12em;
+            z-index: 100; pointer-events: none;
+        }
+        .slide-counter {
+            position: absolute; top: clamp(16px, 2.5vh, 28px); left: var(--slide-padding);
+            font-family: var(--font-mono); font-size: var(--mono-size);
+            color: var(--text-muted); letter-spacing: 0.15em; z-index: 10;
+        }
+        /* ===========================================
+           INLINE EDITING
+           =========================================== */
+        .edit-hotzone {
+            position: fixed; top: 0; right: 0;
+            width: 80px; height: 80px;
+            z-index: 10000; cursor: pointer;
+        }
+        .edit-toggle {
+            position: fixed; top: clamp(10px, 1.5vh, 18px); right: clamp(10px, 1.5vw, 18px);
+            background: var(--bg-card); border: 1px solid var(--border-medium);
+            color: var(--text-secondary); padding: 6px 10px;
+            border-radius: 6px; font-family: var(--font-mono);
+            font-size: var(--mono-size); cursor: pointer;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.3s ease, background 0.2s ease;
+            z-index: 10001;
+        }
+        .edit-toggle.show, .edit-toggle.active {
+            opacity: 1; pointer-events: auto;
+        }
+        .edit-toggle.active {
+            background: rgba(79, 195, 247, 0.15);
+            border-color: var(--accent-cyan);
+            color: var(--accent-cyan);
+        }
+        body.editing [contenteditable] {
+            outline: 1px dashed rgba(79, 195, 247, 0.4);
+            border-radius: 2px; cursor: text;
+        }
+        body.editing [contenteditable]:focus {
+            outline: 1px solid var(--accent-cyan);
+            background: rgba(79, 195, 247, 0.04);
+        }
+        /* ===========================================
+           SLIDE 1 — TITLE
+           =========================================== */
+        #slide-1 { background: var(--bg-primary); }
+        #slide-1 .title-content {
+            position: absolute; left: var(--slide-padding); bottom: clamp(60px, 12vh, 120px);
+            max-width: 60%; z-index: 2;
+        }
+        #slide-1 h1 {
+            font-family: var(--font-display); font-weight: 800;
+            font-size: var(--title-size); color: var(--text-primary);
+            line-height: 0.9; letter-spacing: -0.03em;
+        }
+        #slide-1 h1 em { font-style: normal; color: var(--accent-cyan); }
+        #slide-1 .subtitle {
+            font-family: var(--font-body); font-weight: 300;
+            font-size: var(--body-size); color: var(--text-secondary);
+            margin-top: var(--content-gap); max-width: 440px; line-height: 1.65;
+        }
+        #slide-1 .orbit-group {
+            position: absolute; right: clamp(-80px, -6vw, -30px);
+            top: 50%; transform: translateY(-50%); z-index: 1;
+        }
+        #slide-1 .o1 {
+            width: clamp(240px, 38vw, 520px); height: clamp(240px, 38vw, 520px);
+            border: 1px solid rgba(100, 180, 255, 0.12);
+        }
+        #slide-1 .o2 {
+            width: clamp(380px, 56vw, 760px); height: clamp(380px, 56vw, 760px);
+            border: 1px solid rgba(100, 180, 255, 0.06);
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        #slide-1 .o3 {
+            width: clamp(520px, 75vw, 1000px); height: clamp(520px, 75vw, 1000px);
+            border: 1px solid rgba(100, 180, 255, 0.03);
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        #slide-1 .sat {
+            position: absolute;
+            width: clamp(6px, 0.8vw, 10px); height: clamp(6px, 0.8vw, 10px);
+            top: calc(50% - clamp(120px, 19vw, 260px));
+            left: 50%; transform: translateX(-50%);
+        }
+        #slide-1 .globe-glow {
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: clamp(60px, 9vw, 120px); height: clamp(60px, 9vw, 120px);
+            background: radial-gradient(circle, rgba(79, 195, 247, 0.2) 0%, transparent 70%);
+            border-radius: 50%;
+            border: 1px solid rgba(79, 195, 247, 0.3);
+        }
+        #slide-1 .globe-inner {
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: clamp(20px, 3vw, 40px); height: clamp(20px, 3vw, 40px);
+            background: radial-gradient(circle, rgba(79, 195, 247, 0.5) 0%, rgba(79, 195, 247, 0.1) 70%);
+            border-radius: 50%;
+        }
+        #slide-1 .bg-glow {
+            left: -15%; top: -20%; width: 70%; height: 80%;
+            background: radial-gradient(ellipse, rgba(15, 50, 130, 0.5) 0%, transparent 70%);
+        }
+        /* ===========================================
+           SLIDE 2 — THE PROBLEM
+           =========================================== */
+        #slide-2 .slide-content { max-width: 880px; }
+        #slide-2 .stat-row {
+            display: flex; gap: clamp(1rem, 3vw, 2.5rem);
+            margin-top: var(--content-gap); flex-wrap: wrap;
+        }
+        #slide-2 .stat-box {
+            flex: 1; min-width: min(100%, 160px);
+            padding: clamp(0.75rem, 2vw, 1.25rem);
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle); border-radius: 8px;
+        }
+        #slide-2 .stat-num {
+            font-family: var(--font-display); font-weight: 800;
+            font-size: clamp(1.6rem, 3.5vw, 2.8rem);
+            color: var(--accent-cyan); line-height: 1;
+        }
+        #slide-2 .stat-label {
+            font-family: var(--font-body); font-weight: 300;
+            font-size: var(--small-size); color: var(--text-secondary);
+            margin-top: 0.3em; line-height: 1.4;
+        }
+        #slide-2 .bg-glow {
+            right: -10%; top: 20%; width: 50%; height: 60%;
+            background: radial-gradient(ellipse, rgba(30, 70, 160, 0.3) 0%, transparent 70%);
+        }
+        /* ===========================================
+           SLIDE 3 — THE SOLUTION
+           =========================================== */
+        #slide-3 .solution-layout {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: clamp(1.5rem, 3vw, 3rem); align-items: center;
+        }
+        @media (max-width: 700px) {
+            #slide-3 .solution-layout { grid-template-columns: 1fr; }
+        }
+        #slide-3 .sat-diagram {
+            display: flex; align-items: center; justify-content: center;
+            height: clamp(180px, 30vh, 320px); position: relative;
+        }
+        #slide-3 .sat-body {
+            width: clamp(40px, 6vw, 70px); height: clamp(60px, 9vw, 100px);
+            background: linear-gradient(135deg, #1e3a5f, #0d2040);
+            border: 1px solid var(--border-medium); border-radius: 4px; position: relative;
+        }
+        #slide-3 .sat-panel {
+            position: absolute; top: 50%; transform: translateY(-50%);
+            width: clamp(50px, 8vw, 100px); height: clamp(20px, 3.5vw, 36px);
+            background: linear-gradient(135deg, #1e4a8a, #1565c0);
+            border: 1px solid rgba(79, 195, 247, 0.3); border-radius: 2px;
+        }
+        #slide-3 .sat-panel.left { right: calc(100% + 6px); }
+        #slide-3 .sat-panel.right { left: calc(100% + 6px); }
+        #slide-3 .orbit-sat {
+            width: clamp(180px, 26vw, 280px); height: clamp(180px, 26vw, 280px);
+            border: 1px dashed rgba(79, 195, 247, 0.2);
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+        }
+        #slide-3 .geo-label {
+            position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+            font-family: var(--font-mono); font-size: var(--mono-size);
+            color: var(--text-muted); white-space: nowrap;
+        }
+        /* ===========================================
+           SLIDE 4 — PRODUCT
+           =========================================== */
+        #slide-4 .product-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            gap: clamp(0.6rem, 1.5vw, 1.2rem); margin-top: var(--content-gap);
+        }
+        @media (max-width: 600px) {
+            #slide-4 .product-grid { grid-template-columns: 1fr; }
+        }
+        #slide-4 .product-card {
+            padding: clamp(0.75rem, 2vw, 1.3rem);
+            background: var(--bg-card); border: 1px solid var(--border-subtle);
+            border-radius: 10px;
+            transition: border-color 0.3s ease, background 0.3s ease;
+        }
+        #slide-4 .product-card:hover {
+            border-color: var(--border-medium); background: var(--bg-card-hover);
+        }
+        #slide-4 .card-icon { font-size: clamp(1.2rem, 2.5vw, 1.8rem); margin-bottom: 0.5em; }
+        #slide-4 .card-title {
+            font-family: var(--font-display); font-weight: 700;
+            font-size: clamp(0.85rem, 1.4vw, 1.1rem);
+            color: var(--text-primary); margin-bottom: 0.4em;
+        }
+        #slide-4 .card-body {
+            font-family: var(--font-body); font-weight: 300;
+            font-size: var(--small-size); color: var(--text-secondary); line-height: 1.55;
+        }
+        #slide-4 .bg-glow {
+            left: 20%; top: -10%; width: 60%; height: 50%;
+            background: radial-gradient(ellipse, rgba(21, 101, 192, 0.2) 0%, transparent 70%);
+        }
+        /* ===========================================
+           SLIDE 5 — HOW IT WORKS
+           =========================================== */
+        #slide-5 .steps {
+            display: flex; flex-direction: column;
+            gap: clamp(0.6rem, 1.5vh, 1.1rem); margin-top: var(--content-gap);
+        }
+        #slide-5 .step {
+            display: flex; align-items: flex-start;
+            gap: clamp(0.75rem, 2vw, 1.5rem);
+            padding: clamp(0.6rem, 1.5vw, 1rem);
+            background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 8px;
+        }
+        #slide-5 .step-num {
+            font-family: var(--font-mono); font-weight: 700;
+            font-size: clamp(0.85rem, 1.4vw, 1.1rem);
+            color: var(--accent-cyan); min-width: 2em; flex-shrink: 0; padding-top: 0.1em;
+        }
+        #slide-5 .step-title {
+            font-family: var(--font-display); font-weight: 700;
+            font-size: clamp(0.8rem, 1.2vw, 0.95rem);
+            color: var(--text-primary); margin-bottom: 0.2em;
+        }
+        #slide-5 .step-desc {
+            font-family: var(--font-body); font-weight: 300;
+            font-size: var(--small-size); color: var(--text-secondary); line-height: 1.5;
+        }
+        #slide-5 .bg-glow {
+            right: -5%; bottom: 0; width: 45%; height: 60%;
+            background: radial-gradient(ellipse, rgba(15, 50, 130, 0.4) 0%, transparent 70%);
+        }
+        /* ===========================================
+           SLIDE 6 — TRACTION
+           =========================================== */
+        #slide-6 .traction-grid {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: clamp(1rem, 2.5vw, 2rem); margin-top: var(--content-gap);
+        }
+        @media (max-width: 600px) {
+            #slide-6 .traction-grid { grid-template-columns: 1fr; }
+        }
+        #slide-6 .traction-stat {
+            padding: clamp(0.75rem, 2vw, 1.4rem);
+            background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 10px;
+        }
+        #slide-6 .traction-stat.featured {
+            border-color: rgba(79, 195, 247, 0.3);
+            background: rgba(79, 195, 247, 0.05);
+        }
+        #slide-6 .big-num {
+            font-family: var(--font-display); font-weight: 800;
+            font-size: clamp(2rem, 4.5vw, 3.5rem);
+            line-height: 1; letter-spacing: -0.02em;
+        }
+        #slide-6 .big-num.cyan   { color: var(--accent-cyan); }
+        #slide-6 .big-num.warm   { color: var(--accent-warm); }
+        #slide-6 .big-num.white  { color: var(--text-primary); }
+        #slide-6 .traction-label {
+            font-family: var(--font-body); font-weight: 300;
+            font-size: var(--small-size); color: var(--text-secondary);
+            margin-top: 0.3em; line-height: 1.4;
+        }
+        #slide-6 .customer-strip {
+            margin-top: clamp(0.75rem, 2vh, 1.5rem);
+            padding: clamp(0.5rem, 1.5vw, 1rem);
+            background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 8px;
+        }
+        #slide-6 .customer-label {
+            font-family: var(--font-mono); font-size: var(--mono-size);
+            color: var(--text-muted); margin-bottom: 0.5em; letter-spacing: 0.15em;
+        }
+        #slide-6 .customers { display: flex; flex-wrap: wrap; gap: 0.5em; }
+        #slide-6 .customer-tag {
+            font-family: var(--font-body); font-size: var(--small-size);
+            color: var(--text-secondary); padding: 0.25em 0.75em;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border-subtle); border-radius: 20px;
+        }
+        #slide-6 .bg-glow {
+            left: -5%; bottom: 0; width: 50%; height: 60%;
+            background: radial-gradient(ellipse, rgba(15, 50, 130, 0.35) 0%, transparent 70%);
+        }
+        /* ===========================================
+           SLIDE 7 — TEAM & MISSION
+           =========================================== */
+        #slide-7 .team-layout {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: clamp(1.5rem, 3vw, 3rem); align-items: start;
+        }
+        @media (max-width: 650px) {
+            #slide-7 .team-layout { grid-template-columns: 1fr; }
+        }
+        #slide-7 .quote-block {
+            padding: clamp(1rem, 2.5vw, 2rem);
+            border-left: 2px solid var(--accent-cyan);
+            background: var(--bg-card); border-radius: 0 8px 8px 0;
+        }
+        #slide-7 .quote-text {
+            font-family: var(--font-display); font-weight: 600;
+            font-size: clamp(0.9rem, 1.6vw, 1.3rem);
+            color: var(--text-primary); line-height: 1.4; font-style: italic;
+        }
+        #slide-7 .quote-attr {
+            font-family: var(--font-mono); font-size: var(--mono-size);
+            color: var(--accent-cyan); margin-top: 0.75em; letter-spacing: 0.1em;
+        }
+        #slide-7 .facts { display: flex; flex-direction: column; gap: var(--element-gap); }
+        #slide-7 .fact-row {
+            display: flex; align-items: center;
+            gap: clamp(0.5rem, 1.2vw, 1rem);
+            padding: clamp(0.5rem, 1.2vw, 0.85rem);
+            background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: 7px;
+        }
+        #slide-7 .fact-icon { font-size: clamp(1rem, 1.8vw, 1.4rem); flex-shrink: 0; }
+        #slide-7 .fact-text {
+            font-family: var(--font-body); font-size: var(--body-size);
+            color: var(--text-secondary); font-weight: 300; line-height: 1.4;
+        }
+        #slide-7 .bg-glow {
+            right: 0; top: 0; width: 55%; height: 55%;
+            background: radial-gradient(ellipse, rgba(21, 101, 192, 0.25) 0%, transparent 70%);
+        }
+        /* ===========================================
+           SLIDE 8 — CLOSING
+           =========================================== */
+        #slide-8 { background: var(--bg-primary); }
+        #slide-8 .slide-content { align-items: center; text-align: center; }
+        #slide-8 h2 {
+            font-family: var(--font-display); font-weight: 800;
+            font-size: clamp(2rem, 5.5vw, 4.5rem);
+            color: var(--text-primary); letter-spacing: -0.025em; line-height: 1;
+        }
+        #slide-8 h2 em { font-style: normal; color: var(--accent-cyan); }
+        #slide-8 .close-sub {
+            font-family: var(--font-body); font-weight: 300;
+            font-size: var(--body-size); color: var(--text-secondary);
+            max-width: 480px; line-height: 1.7; margin-top: var(--element-gap);
+        }
+        #slide-8 .link-row {
+            display: flex; gap: clamp(1rem, 3vw, 2rem); flex-wrap: wrap;
+            justify-content: center; margin-top: clamp(1.5rem, 3vh, 2.5rem);
+        }
+        #slide-8 .link-pill {
+            font-family: var(--font-mono); font-size: var(--mono-size);
+            color: var(--accent-cyan); padding: 0.5em 1.2em;
+            border: 1px solid rgba(79, 195, 247, 0.35); border-radius: 40px;
+            letter-spacing: 0.12em; text-decoration: none;
+            transition: background 0.25s ease, border-color 0.25s ease; cursor: default;
+        }
+        #slide-8 .link-pill:hover {
+            background: rgba(79, 195, 247, 0.08); border-color: var(--accent-cyan);
+        }
+        #slide-8 .orbit-group {
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%); z-index: 0;
+        }
+        #slide-8 .co1 {
+            width: clamp(200px, 30vw, 380px); height: clamp(200px, 30vw, 380px);
+            border: 1px solid rgba(79, 195, 247, 0.12); border-radius: 50%;
+        }
+        #slide-8 .co2 {
+            width: clamp(340px, 52vw, 640px); height: clamp(340px, 52vw, 640px);
+            border: 1px solid rgba(100, 180, 255, 0.06); border-radius: 50%;
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+        }
+        #slide-8 .bg-glow-center {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: clamp(200px, 30vw, 350px); height: clamp(200px, 30vw, 350px);
+            background: radial-gradient(circle, rgba(79, 195, 247, 0.08) 0%, transparent 70%);
+            border-radius: 50%; pointer-events: none;
+        }
+        #slide-8 .slide-content { position: relative; z-index: 2; }
+    </style>
+</head>
+<body>
+    <canvas class="star-canvas" id="starCanvas"></canvas>
+    <div class="progress-bar" id="progressBar"></div>
+    <nav class="nav-dots" id="navDots" aria-label="Slide navigation"></nav>
+    <div class="keyboard-hint">↑↓ or Space to navigate</div>
+    <div class="edit-hotzone" id="editHotzone"></div>
+    <button class="edit-toggle" id="editToggle" title="Toggle edit mode (E)">✏ edit</button>
+
+    <!-- SLIDE 1 — TITLE -->
+    <section class="slide visible" id="slide-1" aria-label="Title slide">
+        <div class="grid-bg"></div>
+        <div class="glow-orb bg-glow"></div>
+        <div class="orbit-group">
+            <div class="orbit o1">
+                <div class="orbit-dot sat"></div>
+                <div class="globe-glow"><div class="globe-inner"></div></div>
+            </div>
+            <div class="orbit o2"></div>
+            <div class="orbit o3"></div>
+        </div>
+        <div class="slide-counter">01 / 08</div>
+        <div class="title-content stagger">
+            <div class="mono-label reveal">Company Overview · 2025</div>
+            <div class="h-rule reveal"></div>
+            <h1 class="reveal">Astra<em>nis</em></h1>
+            <p class="subtitle reveal">Small satellites. Big internet. Connecting the next billion people with affordable broadband from geostationary orbit.</p>
+        </div>
+    </section>
+
+    <!-- SLIDE 2 — THE PROBLEM -->
+    <section class="slide" id="slide-2" aria-label="The problem">
+        <div class="grid-bg"></div>
+        <div class="glow-orb bg-glow"></div>
+        <div class="slide-counter">02 / 08</div>
+        <div class="slide-content">
+            <div class="stagger">
+                <div class="mono-label reveal">The Problem</div>
+                <div class="h-rule reveal"></div>
+                <h2 class="section-title reveal">Half the world is still offline.</h2>
+                <p class="body-text reveal" style="max-width: 540px;">Billions of people in rural, remote, and island regions have no access to reliable internet — not because connectivity is impossible, but because traditional satellite infrastructure is too large and too expensive to build for underserved markets.</p>
+            </div>
+            <div class="stat-row stagger">
+                <div class="stat-box reveal">
+                    <div class="stat-num">3.5B</div>
+                    <div class="stat-label">People without reliable broadband access worldwide</div>
+                </div>
+                <div class="stat-box reveal">
+                    <div class="stat-num">$300M+</div>
+                    <div class="stat-label">Typical cost of a traditional large GEO satellite</div>
+                </div>
+                <div class="stat-box reveal">
+                    <div class="stat-num">10–15 yr</div>
+                    <div class="stat-label">Procurement cycle for conventional telecom satellites</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 3 — THE SOLUTION -->
+    <section class="slide" id="slide-3" aria-label="The solution">
+        <div class="grid-bg"></div>
+        <div class="slide-counter">03 / 08</div>
+        <div class="slide-content">
+            <div class="stagger">
+                <div class="mono-label reveal">The Solution</div>
+                <div class="h-rule reveal"></div>
+                <h2 class="section-title reveal">Microsat GEO — the right tool for the job.</h2>
+            </div>
+            <div class="solution-layout" style="margin-top: var(--content-gap);">
+                <div class="sat-diagram reveal-scale">
+                    <div class="orbit orbit-sat"></div>
+                    <div class="sat-body">
+                        <div class="sat-panel left"></div>
+                        <div class="sat-panel right"></div>
+                    </div>
+                    <div class="geo-label mono-label" style="font-size: clamp(0.48rem,0.7vw,0.62rem);">35,786 km GEO Orbit</div>
+                </div>
+                <div class="stagger">
+                    <p class="body-text reveal">Astranis builds <strong style="color:var(--text-primary);">small, dedicated geostationary satellites</strong> — roughly the size of a washing machine — that operate in GEO orbit to deliver focused broadband coverage over a specific region.</p>
+                    <div class="h-rule reveal" style="margin-top: var(--content-gap);"></div>
+                    <ul class="bullet-list reveal" style="padding-left: 1.2em; color: var(--text-secondary); font-size: var(--body-size); line-height: 1.8;">
+                        <li>Fraction of the cost of a large GEO satellite</li>
+                        <li>2–3 year build and launch timeline (vs. 10–15 yr)</li>
+                        <li>Dedicated bandwidth for a single operator/region</li>
+                        <li>Rapid iteration — software-defined architecture</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 4 — PRODUCT -->
+    <section class="slide" id="slide-4" aria-label="Product">
+        <div class="grid-bg"></div>
+        <div class="glow-orb bg-glow"></div>
+        <div class="slide-counter">04 / 08</div>
+        <div class="slide-content">
+            <div class="stagger">
+                <div class="mono-label reveal">The Product</div>
+                <div class="h-rule reveal"></div>
+                <h2 class="section-title reveal">MicroGEO — purpose-built connectivity.</h2>
+            </div>
+            <div class="product-grid stagger">
+                <div class="product-card reveal">
+                    <div class="card-icon">🛰️</div>
+                    <div class="card-title">Compact Form Factor</div>
+                    <div class="card-body">~400 kg spacecraft. Fits on a rideshare launch vehicle, dramatically reducing launch costs.</div>
+                </div>
+                <div class="product-card reveal">
+                    <div class="card-icon">📡</div>
+                    <div class="card-title">High-Throughput Payload</div>
+                    <div class="card-body">Up to 10 Gbps of dedicated capacity per satellite, optimized for regional broadband delivery.</div>
+                </div>
+                <div class="product-card reveal">
+                    <div class="card-icon">💾</div>
+                    <div class="card-title">Software-Defined Radio</div>
+                    <div class="card-body">Reprogrammable in orbit. Frequency plans, beam shapes, and power allocation updated post-launch.</div>
+                </div>
+                <div class="product-card reveal">
+                    <div class="card-icon">⚡</div>
+                    <div class="card-title">Fast Deployment</div>
+                    <div class="card-body">From contract to operational service in under 3 years — the fastest path to GEO connectivity.</div>
+                </div>
+                <div class="product-card reveal">
+                    <div class="card-icon">🌐</div>
+                    <div class="card-title">Fixed Coverage</div>
+                    <div class="card-body">Geostationary orbit provides a stable, always-available signal over a dedicated service area.</div>
+                </div>
+                <div class="product-card reveal">
+                    <div class="card-icon">🔧</div>
+                    <div class="card-title">Vertically Integrated</div>
+                    <div class="card-body">Astranis designs and manufactures the bus and payload in-house, controlling quality and cost.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 5 — HOW IT WORKS -->
+    <section class="slide" id="slide-5" aria-label="How it works">
+        <div class="grid-bg"></div>
+        <div class="glow-orb bg-glow"></div>
+        <div class="slide-counter">05 / 08</div>
+        <div class="slide-content">
+            <div class="stagger">
+                <div class="mono-label reveal">How It Works</div>
+                <div class="h-rule reveal"></div>
+                <h2 class="section-title reveal">From contract to broadband in 3 steps.</h2>
+            </div>
+            <div class="steps stagger">
+                <div class="step reveal">
+                    <div class="step-num">01</div>
+                    <div class="step-body">
+                        <div class="step-title">Operator contracts a MicroGEO satellite</div>
+                        <div class="step-desc">An internet service provider or telecom operator in an underserved region purchases a dedicated satellite. Astranis handles design, manufacturing, and launch coordination.</div>
+                    </div>
+                </div>
+                <div class="step reveal">
+                    <div class="step-num">02</div>
+                    <div class="step-body">
+                        <div class="step-title">Launch &amp; in-orbit delivery</div>
+                        <div class="step-desc">The satellite launches as a rideshare payload (SpaceX Falcon 9, etc.) and maneuvers to its designated GEO slot. Astranis manages on-orbit checkout and hands off to the operator.</div>
+                    </div>
+                </div>
+                <div class="step reveal">
+                    <div class="step-num">03</div>
+                    <div class="step-body">
+                        <div class="step-title">Operator delivers broadband to end users</div>
+                        <div class="step-desc">The operator runs ground infrastructure and distributes internet service to homes, businesses, and government facilities in the coverage area — often for the first time.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 6 — TRACTION -->
+    <section class="slide" id="slide-6" aria-label="Traction and customers">
+        <div class="grid-bg"></div>
+        <div class="glow-orb bg-glow"></div>
+        <div class="slide-counter">06 / 08</div>
+        <div class="slide-content">
+            <div class="stagger">
+                <div class="mono-label reveal">Traction</div>
+                <div class="h-rule reveal"></div>
+                <h2 class="section-title reveal">Commercial contracts. Satellites in orbit.</h2>
+            </div>
+            <div class="traction-grid stagger">
+                <div class="traction-stat featured reveal">
+                    <div class="big-num cyan">2</div>
+                    <div class="traction-label">Satellites successfully launched and operational in GEO orbit</div>
+                </div>
+                <div class="traction-stat reveal">
+                    <div class="big-num warm">$200M+</div>
+                    <div class="traction-label">Total funding raised from Andreessen Horowitz, RRE Ventures, and others</div>
+                </div>
+                <div class="traction-stat reveal">
+                    <div class="big-num white">3</div>
+                    <div class="traction-label">Named commercial customers with signed satellite contracts</div>
+                </div>
+                <div class="traction-stat reveal">
+                    <div class="big-num cyan">2019</div>
+                    <div class="traction-label">Founded in San Francisco. ~200 employees as of 2024.</div>
+                </div>
+            </div>
+            <div class="customer-strip reveal" style="margin-top: var(--element-gap);">
+                <div class="customer-label">// notable_customers</div>
+                <div class="customers">
+                    <span class="customer-tag">Pacific Dataport (Alaska)</span>
+                    <span class="customer-tag">Cablevisión (Latin America)</span>
+                    <span class="customer-tag">PCCS (Philippines)</span>
+                    <span class="customer-tag">Tonga Cable</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 7 — TEAM & MISSION -->
+    <section class="slide" id="slide-7" aria-label="Team and mission">
+        <div class="grid-bg"></div>
+        <div class="glow-orb bg-glow"></div>
+        <div class="slide-counter">07 / 08</div>
+        <div class="slide-content">
+            <div class="stagger">
+                <div class="mono-label reveal">Team &amp; Mission</div>
+                <div class="h-rule reveal"></div>
+                <h2 class="section-title reveal">Built by satellite engineers. Driven by a mission.</h2>
+            </div>
+            <div class="team-layout stagger" style="margin-top: var(--content-gap);">
+                <div class="quote-block reveal">
+                    <div class="quote-text">"We exist to provide internet connectivity to the people and places that don't have it today."</div>
+                    <div class="quote-attr">— John Gedmark, CEO &amp; Co-Founder</div>
+                </div>
+                <div class="facts stagger">
+                    <div class="fact-row reveal">
+                        <div class="fact-icon">🎓</div>
+                        <div class="fact-text">Team includes veterans from SpaceX, Planet Labs, and NASA JPL</div>
+                    </div>
+                    <div class="fact-row reveal">
+                        <div class="fact-icon">📍</div>
+                        <div class="fact-text">Headquartered in San Francisco, CA. Manufacturing in-house.</div>
+                    </div>
+                    <div class="fact-row reveal">
+                        <div class="fact-icon">🚀</div>
+                        <div class="fact-text">First satellite (Arcturus) launched 2022 on SpaceX Transporter-3</div>
+                    </div>
+                    <div class="fact-row reveal">
+                        <div class="fact-icon">🌍</div>
+                        <div class="fact-text">Focused on markets in Pacific, Latin America, and Southeast Asia</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 8 — CLOSING -->
+    <section class="slide" id="slide-8" aria-label="Closing slide">
+        <div class="grid-bg"></div>
+        <div class="orbit-group">
+            <div class="orbit co1"></div>
+            <div class="orbit co2"></div>
+        </div>
+        <div class="bg-glow-center"></div>
+        <div class="slide-counter">08 / 08</div>
+        <div class="slide-content stagger">
+            <div class="mono-label reveal" style="text-align:center;">astranis.com</div>
+            <div class="h-rule reveal" style="margin: var(--element-gap) auto;"></div>
+            <h2 class="reveal">Connecting <em>everywhere</em>.</h2>
+            <p class="close-sub reveal">Astranis is building the infrastructure to bring broadband to the places that need it most — one small satellite at a time.</p>
+            <div class="link-row reveal">
+                <span class="link-pill">astranis.com</span>
+                <span class="link-pill">San Francisco, CA</span>
+                <span class="link-pill">Founded 2016</span>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        /* === STAR FIELD === */
+        (function initStars() {
+            const canvas = document.getElementById('starCanvas');
+            const ctx = canvas.getContext('2d');
+            function resize() {
+                canvas.width  = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+            resize();
+            window.addEventListener('resize', resize);
+            const stars = Array.from({ length: 140 }, () => ({
+                x:       Math.random(),
+                y:       Math.random(),
+                r:       Math.random() * 1.2 + 0.2,
+                opacity: Math.random() * 0.6 + 0.1,
+                twinkle: Math.random() * Math.PI * 2
+            }));
+            let frame = 0;
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                frame++;
+                stars.forEach(s => {
+                    const flicker = 0.85 + 0.15 * Math.sin(frame * 0.015 + s.twinkle);
+                    ctx.beginPath();
+                    ctx.arc(s.x * canvas.width, s.y * canvas.height, s.r, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(200, 220, 255, ${s.opacity * flicker})`;
+                    ctx.fill();
+                });
+                requestAnimationFrame(draw);
+            }
+            draw();
+        })();
+
+        /* === SLIDE CONTROLLER === */
+        class SlidePresentation {
+            constructor() {
+                this.slides      = Array.from(document.querySelectorAll('.slide'));
+                this.current     = 0;
+                this.progressBar = document.getElementById('progressBar');
+                this.navDots     = document.getElementById('navDots');
+                this.buildNavDots();
+                this.setupObserver();
+                this.setupKeyboard();
+                this.setupTouch();
+                this.setupWheel();
+                this.markActive(0);
+            }
+            buildNavDots() {
+                this.slides.forEach((slide, i) => {
+                    const dot = document.createElement('button');
+                    dot.className = 'nav-dot';
+                    dot.setAttribute('aria-label', `Go to slide ${i + 1}`);
+                    dot.addEventListener('click', () => this.goTo(i));
+                    this.navDots.appendChild(dot);
+                });
+            }
+            setupObserver() {
+                const io = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('visible');
+                            const idx = this.slides.indexOf(entry.target);
+                            if (idx !== -1) this.markActive(idx);
+                        }
+                    });
+                }, { threshold: 0.55 });
+                this.slides.forEach(s => io.observe(s));
+            }
+            markActive(idx) {
+                this.current = idx;
+                const pct = (idx / (this.slides.length - 1)) * 100;
+                this.progressBar.style.width = pct + '%';
+                const dots = this.navDots.querySelectorAll('.nav-dot');
+                dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+            }
+            goTo(idx) {
+                idx = Math.max(0, Math.min(this.slides.length - 1, idx));
+                this.slides[idx].scrollIntoView({ behavior: 'smooth' });
+            }
+            setupKeyboard() {
+                document.addEventListener('keydown', (e) => {
+                    if (document.body.classList.contains('editing') &&
+                        e.target.getAttribute('contenteditable')) return;
+                    switch (e.key) {
+                        case 'ArrowDown': case 'ArrowRight': case ' ':
+                            e.preventDefault(); this.goTo(this.current + 1); break;
+                        case 'ArrowUp': case 'ArrowLeft':
+                            e.preventDefault(); this.goTo(this.current - 1); break;
+                        case 'Home': e.preventDefault(); this.goTo(0); break;
+                        case 'End':  e.preventDefault(); this.goTo(this.slides.length - 1); break;
+                    }
+                });
+            }
+            setupWheel() {
+                let t = null;
+                window.addEventListener('wheel', (e) => {
+                    clearTimeout(t);
+                    t = setTimeout(() => {
+                        if (e.deltaY > 30)  this.goTo(this.current + 1);
+                        if (e.deltaY < -30) this.goTo(this.current - 1);
+                    }, 50);
+                }, { passive: true });
+            }
+            setupTouch() {
+                let startY = 0, startX = 0;
+                window.addEventListener('touchstart', e => {
+                    startY = e.touches[0].clientY;
+                    startX = e.touches[0].clientX;
+                }, { passive: true });
+                window.addEventListener('touchend', e => {
+                    const dy = startY - e.changedTouches[0].clientY;
+                    const dx = startX - e.changedTouches[0].clientX;
+                    if (Math.abs(dy) > Math.abs(dx) && Math.abs(dy) > 40)
+                        this.goTo(this.current + (dy > 0 ? 1 : -1));
+                }, { passive: true });
+            }
+        }
+
+        /* === INLINE EDITOR === */
+        class InlineEditor {
+            constructor() {
+                this.isActive  = false;
+                this.editables = [];
+                this.toggle    = document.getElementById('editToggle');
+                this.hotzone   = document.getElementById('editHotzone');
+                this.hideTimer = null;
+                this.setupHotzone();
+                this.setupKeyboard();
+                this.toggle.addEventListener('click', () => this.toggleEditMode());
+            }
+            setupHotzone() {
+                this.hotzone.addEventListener('mouseenter', () => {
+                    clearTimeout(this.hideTimer);
+                    this.toggle.classList.add('show');
+                });
+                this.hotzone.addEventListener('mouseleave', () => {
+                    this.hideTimer = setTimeout(() => {
+                        if (!this.isActive) this.toggle.classList.remove('show');
+                    }, 400);
+                });
+                this.toggle.addEventListener('mouseenter', () => clearTimeout(this.hideTimer));
+                this.toggle.addEventListener('mouseleave', () => {
+                    this.hideTimer = setTimeout(() => {
+                        if (!this.isActive) this.toggle.classList.remove('show');
+                    }, 400);
+                });
+                this.hotzone.addEventListener('click', () => this.toggleEditMode());
+            }
+            setupKeyboard() {
+                document.addEventListener('keydown', (e) => {
+                    if ((e.key === 'e' || e.key === 'E') &&
+                        !e.target.getAttribute('contenteditable') && !e.ctrlKey && !e.metaKey)
+                        this.toggleEditMode();
+                    if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+                        e.preventDefault();
+                        this.isActive ? this.exportFile() : this.toggle.textContent = '✓ saved';
+                    }
+                });
+            }
+            toggleEditMode() {
+                this.isActive = !this.isActive;
+                document.body.classList.toggle('editing', this.isActive);
+                this.toggle.classList.toggle('active', this.isActive);
+                this.toggle.classList.add('show');
+                this.toggle.textContent = this.isActive ? '✓ done' : '✏ edit';
+                this.isActive ? this.makeEditable() : this.removeEditable();
+            }
+            makeEditable() {
+                this.editables = Array.from(document.querySelectorAll(
+                    'h1, h2, h3, p, li, .stat-num, .big-num, .mono-label, .card-title, .card-body, .step-title, .step-desc, .fact-text, .quote-text, .traction-label, .stat-label, .quote-attr'
+                ));
+                this.editables.forEach(el => {
+                    el.setAttribute('contenteditable', 'true');
+                    el.setAttribute('spellcheck', 'false');
+                });
+            }
+            removeEditable() {
+                this.editables.forEach(el => el.removeAttribute('contenteditable'));
+                this.editables = [];
+            }
+            exportFile() {
+                this.removeEditable();
+                const html = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+                const blob = new Blob([html], { type: 'text/html' });
+                const url  = URL.createObjectURL(blob);
+                const a    = document.createElement('a');
+                a.href = url; a.download = 'astranis-updated.html'; a.click();
+                URL.revokeObjectURL(url);
+                if (this.isActive) this.makeEditable();
+                this.toggle.textContent = '⬇ exported!';
+                setTimeout(() => { this.toggle.textContent = this.isActive ? '✓ done' : '✏ edit'; }, 2000);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            window._pres   = new SlidePresentation();
+            window._editor = new InlineEditor();
+        });
+    </script>
+</body></html>

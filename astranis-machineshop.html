@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Astranis — Machine Shop Build-Out</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:wght@300;400;700&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        /* ===========================================
+           THEME — Deep Space (matches astranis.html)
+           =========================================== */
+        :root {
+            --bg-primary:       #060b14;
+            --bg-secondary:     #0d1829;
+            --bg-card:          rgba(255,255,255,0.04);
+            --bg-card-hover:    rgba(255,255,255,0.07);
+            --border-subtle:    rgba(100,180,255,0.1);
+            --border-medium:    rgba(100,180,255,0.2);
+            --text-primary:     #f0f4ff;
+            --text-secondary:   rgba(200,215,240,0.65);
+            --text-muted:       rgba(150,175,210,0.4);
+            --accent-cyan:      #4fc3f7;
+            --accent-cyan-glow: rgba(79,195,247,0.3);
+            --accent-warm:      #e8b86d;
+            --accent-red:       #ef5350;
+            --accent-green:     #66bb6a;
+            --accent-orange:    #ffa726;
+            --font-display:     'Syne', sans-serif;
+            --font-mono:        'IBM Plex Mono', monospace;
+            --font-body:        'IBM Plex Sans', sans-serif;
+            --title-size:       clamp(2rem, 6vw, 5rem);
+            --h2-size:          clamp(1.4rem, 3.5vw, 2.8rem);
+            --h3-size:          clamp(1rem, 2vw, 1.6rem);
+            --body-size:        clamp(0.72rem, 1.2vw, 0.95rem);
+            --small-size:       clamp(0.6rem, 0.85vw, 0.75rem);
+            --mono-size:        clamp(0.52rem, 0.8vw, 0.7rem);
+            --slide-padding:    clamp(1.5rem, 4.5vw, 4rem);
+            --content-gap:      clamp(0.6rem, 1.8vw, 1.5rem);
+            --element-gap:      clamp(0.35rem, 0.9vw, 0.8rem);
+            --ease-expo:        cubic-bezier(0.16,1,0.3,1);
+            --ease-out:         cubic-bezier(0.25,0.46,0.45,0.94);
+            --dur-mid:          0.65s;
+        }
+
+        /* === RESET & BASE === */
+        *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+        /* === VIEWPORT BASE (mandatory) === */
+        html, body { height:100%; overflow-x:hidden; }
+        html { scroll-snap-type:y mandatory; scroll-behavior:smooth; }
+        body { background:var(--bg-primary); color:var(--text-primary); font-family:var(--font-body); overflow-x:hidden; }
+
+        .slide {
+            width:100vw; height:100vh; height:100dvh;
+            overflow:hidden; scroll-snap-align:start;
+            display:flex; flex-direction:column; position:relative;
+        }
+        .slide-content {
+            flex:1; display:flex; flex-direction:column;
+            justify-content:center; max-height:100%;
+            overflow:hidden; padding:var(--slide-padding);
+        }
+        .card, .container, .content-box {
+            max-width:min(90vw,1000px); max-height:min(80vh,700px);
+        }
+        .feature-list, .bullet-list { gap:clamp(0.3rem,0.8vh,0.75rem); }
+        .feature-list li, .bullet-list li { font-size:var(--body-size); line-height:1.45; }
+        img, .image-container { max-width:100%; max-height:min(50vh,400px); object-fit:contain; }
+
+        @media (max-height:700px) {
+            :root { --slide-padding:clamp(0.75rem,3vw,2rem); --content-gap:clamp(0.35rem,1.2vw,0.9rem); --title-size:clamp(1.4rem,4.5vw,2.8rem); --h2-size:clamp(1rem,2.8vw,1.8rem); }
+        }
+        @media (max-height:600px) {
+            :root { --slide-padding:clamp(0.5rem,2vw,1.2rem); --content-gap:clamp(0.25rem,0.9vw,0.6rem); --title-size:clamp(1.1rem,3.5vw,1.8rem); --body-size:clamp(0.6rem,1vw,0.82rem); }
+            .nav-dots, .keyboard-hint, .decorative { display:none; }
+        }
+        @media (max-height:500px) {
+            :root { --slide-padding:clamp(0.4rem,1.8vw,0.9rem); --title-size:clamp(1rem,3vw,1.4rem); --h2-size:clamp(0.85rem,2.2vw,1.1rem); --body-size:clamp(0.58rem,0.9vw,0.75rem); }
+        }
+        @media (max-width:600px) { :root { --title-size:clamp(1.4rem,7vw,2.5rem); } }
+        @media (prefers-reduced-motion:reduce) {
+            *, *::before, *::after { animation-duration:0.01ms !important; transition-duration:0.2s !important; }
+            html { scroll-behavior:auto; }
+        }
+
+        /* === SHARED BACKGROUND ELEMENTS === */
+        .star-canvas { position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:0; }
+        .grid-bg {
+            position:absolute; inset:0; pointer-events:none;
+            background-image: linear-gradient(rgba(100,180,255,0.025) 1px, transparent 1px), linear-gradient(90deg,rgba(100,180,255,0.025) 1px,transparent 1px);
+            background-size:clamp(40px,5vw,65px) clamp(40px,5vw,65px);
+        }
+        .glow-orb { position:absolute; border-radius:50%; pointer-events:none; filter:blur(clamp(40px,8vw,100px)); }
+        .orbit { position:absolute; border-radius:50%; border:1px solid var(--border-subtle); pointer-events:none; }
+        .orbit-dot { position:absolute; border-radius:50%; background:var(--accent-cyan); box-shadow:0 0 8px 3px var(--accent-cyan-glow); }
+
+        /* === REVEAL ANIMATIONS === */
+        .reveal { opacity:0; transform:translateY(22px); transition:opacity var(--dur-mid) var(--ease-expo), transform var(--dur-mid) var(--ease-expo); }
+        .slide.visible .reveal { opacity:1; transform:translateY(0); }
+        .reveal-left { opacity:0; transform:translateX(-28px); transition:opacity var(--dur-mid) var(--ease-expo), transform var(--dur-mid) var(--ease-expo); }
+        .slide.visible .reveal-left { opacity:1; transform:translateX(0); }
+        .reveal-scale { opacity:0; transform:scale(0.93); transition:opacity var(--dur-mid) var(--ease-expo), transform var(--dur-mid) var(--ease-expo); }
+        .slide.visible .reveal-scale { opacity:1; transform:scale(1); }
+        .stagger > *:nth-child(1) { transition-delay:0.06s; }
+        .stagger > *:nth-child(2) { transition-delay:0.14s; }
+        .stagger > *:nth-child(3) { transition-delay:0.22s; }
+        .stagger > *:nth-child(4) { transition-delay:0.30s; }
+        .stagger > *:nth-child(5) { transition-delay:0.38s; }
+        .stagger > *:nth-child(6) { transition-delay:0.46s; }
+
+        /* === TYPOGRAPHY === */
+        .mono-label { font-family:var(--font-mono); font-weight:400; font-size:var(--mono-size); letter-spacing:0.18em; text-transform:uppercase; color:var(--accent-cyan); }
+        .section-title { font-family:var(--font-display); font-weight:800; font-size:var(--h2-size); color:var(--text-primary); line-height:1.05; letter-spacing:-0.02em; }
+        .body-text { font-family:var(--font-body); font-weight:300; font-size:var(--body-size); color:var(--text-secondary); line-height:1.65; }
+        .h-rule { width:clamp(22px,3vw,40px); height:1px; background:linear-gradient(90deg,var(--accent-cyan),transparent); margin:var(--element-gap) 0; }
+        .accent-cyan { color:var(--accent-cyan); }
+        .accent-warm  { color:var(--accent-warm); }
+        .accent-red   { color:var(--accent-red); }
+        .accent-green { color:var(--accent-green); }
+        .accent-orange{ color:var(--accent-orange); }
+        .badge { display:inline-flex; align-items:center; gap:0.4em; font-family:var(--font-mono); font-size:var(--mono-size); padding:0.25em 0.7em; border-radius:4px; font-weight:700; letter-spacing:0.06em; }
+        .badge-green  { background:rgba(102,187,106,0.12); color:var(--accent-green); border:1px solid rgba(102,187,106,0.3); }
+        .badge-orange { background:rgba(255,167,38,0.12);  color:var(--accent-orange); border:1px solid rgba(255,167,38,0.3); }
+        .badge-red    { background:rgba(239,83,80,0.12);   color:var(--accent-red);    border:1px solid rgba(239,83,80,0.3); }
+
+        /* === NAVIGATION === */
+        .progress-bar { position:fixed; top:0; left:0; height:2px; background:var(--accent-cyan); width:0%; transition:width 0.3s var(--ease-out); z-index:1000; box-shadow:0 0 6px var(--accent-cyan-glow); }
+        .nav-dots { position:fixed; right:clamp(10px,1.8vw,20px); top:50%; transform:translateY(-50%); display:flex; flex-direction:column; gap:clamp(6px,1vh,12px); z-index:1000; }
+        .nav-dot { width:5px; height:5px; border-radius:50%; background:var(--text-muted); cursor:pointer; transition:all 0.3s ease; border:none; }
+        .nav-dot.active { background:var(--accent-cyan); box-shadow:0 0 5px var(--accent-cyan-glow); transform:scale(1.5); }
+        .nav-dot:hover { background:rgba(79,195,247,0.5); transform:scale(1.3); }
+        .keyboard-hint { position:fixed; bottom:clamp(10px,1.8vh,18px); right:clamp(10px,1.8vw,18px); font-family:var(--font-mono); font-size:clamp(0.45rem,0.6vw,0.55rem); color:var(--text-muted); letter-spacing:0.12em; z-index:100; pointer-events:none; }
+        .slide-counter { position:absolute; top:clamp(14px,2.2vh,24px); left:var(--slide-padding); font-family:var(--font-mono); font-size:var(--mono-size); color:var(--text-muted); letter-spacing:0.15em; z-index:10; }
+
+        /* === SHARED CARD STYLE === */
+        .info-card { padding:clamp(0.65rem,1.8vw,1.2rem); background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:10px; }
+        .info-card.featured { border-color:rgba(79,195,247,0.3); background:rgba(79,195,247,0.05); }
+        .info-card.warn { border-color:rgba(255,167,38,0.3); background:rgba(255,167,38,0.04); }
+        .info-card.danger { border-color:rgba(239,83,80,0.3); background:rgba(239,83,80,0.04); }
+        .card-label { font-family:var(--font-mono); font-size:var(--mono-size); letter-spacing:0.14em; text-transform:uppercase; color:var(--text-muted); margin-bottom:0.4em; }
+        .card-title { font-family:var(--font-display); font-weight:700; font-size:clamp(0.78rem,1.3vw,1rem); color:var(--text-primary); margin-bottom:0.35em; }
+        .card-body { font-family:var(--font-body); font-weight:300; font-size:var(--small-size); color:var(--text-secondary); line-height:1.5; }
+        .big-num { font-family:var(--font-display); font-weight:800; font-size:clamp(1.8rem,4vw,3rem); line-height:1; letter-spacing:-0.02em; color:var(--accent-cyan); }
+
+        /* === BULLET LIST STYLE === */
+        .check-list { list-style:none; display:flex; flex-direction:column; gap:var(--element-gap); }
+        .check-list li { display:flex; align-items:flex-start; gap:0.6em; font-size:var(--body-size); color:var(--text-secondary); font-weight:300; line-height:1.45; }
+        .check-list li::before { content:attr(data-icon); flex-shrink:0; font-size:0.9em; margin-top:0.1em; }
+
+        /* === TABLE === */
+        .data-table { width:100%; border-collapse:collapse; font-size:var(--small-size); }
+        .data-table th { font-family:var(--font-mono); font-weight:400; font-size:clamp(0.48rem,0.7vw,0.62rem); letter-spacing:0.14em; text-transform:uppercase; color:var(--accent-cyan); padding:0.5em 0.8em; border-bottom:1px solid var(--border-medium); text-align:left; }
+        .data-table td { padding:0.45em 0.8em; color:var(--text-secondary); font-weight:300; border-bottom:1px solid var(--border-subtle); }
+        .data-table tr:last-child td { border-bottom:none; }
+        .data-table .total-row td { color:var(--text-primary); font-weight:500; border-top:1px solid var(--border-medium); }
+        .data-table .warn-row td { color:var(--accent-orange); }
+        .data-table .danger-row td { color:var(--accent-red); }
+
+        /* === RISK BADGE === */
+        .risk-tag { font-family:var(--font-mono); font-size:var(--mono-size); font-weight:700; padding:0.2em 0.6em; border-radius:3px; letter-spacing:0.06em; }
+        .risk-high { background:rgba(239,83,80,0.15); color:var(--accent-red); }
+        .risk-med  { background:rgba(255,167,38,0.15); color:var(--accent-orange); }
+
+        /* === TWO-COL LAYOUT === */
+        .two-col { display:grid; grid-template-columns:1fr 1fr; gap:clamp(1rem,2.5vw,2.5rem); align-items:start; }
+        @media (max-width:680px) { .two-col { grid-template-columns:1fr; } }
+
+        /* === GLOW ORBS PER SLIDE === */
+        .glow-left  { left:-15%; top:-20%; width:70%; height:80%; background:radial-gradient(ellipse,rgba(15,50,130,0.5) 0%,transparent 70%); }
+        .glow-right { right:-10%; top:20%; width:50%; height:60%; background:radial-gradient(ellipse,rgba(30,70,160,0.3) 0%,transparent 70%); }
+        .glow-top   { left:20%; top:-10%; width:60%; height:50%; background:radial-gradient(ellipse,rgba(21,101,192,0.2) 0%,transparent 70%); }
+        .glow-warn  { right:0; top:0; width:50%; height:55%; background:radial-gradient(ellipse,rgba(120,60,10,0.25) 0%,transparent 70%); }
+        .glow-danger{ left:0; bottom:0; width:55%; height:60%; background:radial-gradient(ellipse,rgba(120,20,20,0.25) 0%,transparent 70%); }
+
+        /* ===================================================
+           SLIDE 1 — TITLE
+           =================================================== */
+        #s1 { background:var(--bg-primary); }
+        #s1 .title-wrap { position:absolute; left:var(--slide-padding); bottom:clamp(50px,10vh,110px); max-width:58%; z-index:2; }
+        #s1 h1 { font-family:var(--font-display); font-weight:800; font-size:var(--title-size); color:var(--text-primary); line-height:0.92; letter-spacing:-0.03em; }
+        #s1 h1 em { font-style:normal; color:var(--accent-cyan); }
+        #s1 .sub { font-size:var(--body-size); color:var(--text-secondary); font-weight:300; margin-top:var(--content-gap); line-height:1.6; max-width:420px; }
+        #s1 .orbit-grp { position:absolute; right:clamp(-80px,-5vw,-20px); top:50%; transform:translateY(-50%); z-index:1; }
+        #s1 .o1 { width:clamp(220px,36vw,490px); height:clamp(220px,36vw,490px); border:1px solid rgba(100,180,255,0.12); }
+        #s1 .o2 { width:clamp(360px,54vw,720px); height:clamp(360px,54vw,720px); border:1px solid rgba(100,180,255,0.06); position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); }
+        #s1 .sat-dot { position:absolute; width:clamp(5px,0.75vw,9px); height:clamp(5px,0.75vw,9px); background:var(--accent-cyan); border-radius:50%; box-shadow:0 0 8px 3px var(--accent-cyan-glow); top:calc(50% - clamp(110px,18vw,245px)); left:50%; transform:translateX(-50%); }
+        #s1 .globe { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:clamp(55px,8vw,110px); height:clamp(55px,8vw,110px); border-radius:50%; background:radial-gradient(circle,rgba(79,195,247,0.2) 0%,transparent 70%); border:1px solid rgba(79,195,247,0.3); }
+
+        /* ===================================================
+           SLIDE 2 — EXEC SUMMARY
+           =================================================== */
+        #s2 .exec-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:clamp(0.6rem,1.5vw,1.2rem); margin-top:var(--content-gap); }
+        @media (max-width:680px) { #s2 .exec-grid { grid-template-columns:1fr; } }
+        #s2 .decision-box { margin-top:var(--content-gap); padding:clamp(0.6rem,1.5vw,1rem); background:rgba(79,195,247,0.06); border:1px solid rgba(79,195,247,0.25); border-radius:8px; }
+        #s2 .decision-title { font-family:var(--font-mono); font-size:var(--mono-size); color:var(--accent-cyan); letter-spacing:0.12em; margin-bottom:0.5em; }
+        #s2 .decision-items { display:flex; flex-wrap:wrap; gap:0.4em; }
+        #s2 .d-item { font-size:var(--small-size); color:var(--text-secondary); font-weight:300; padding:0.2em 0.7em; background:rgba(255,255,255,0.04); border:1px solid var(--border-subtle); border-radius:20px; }
+
+        /* ===================================================
+           SLIDE 3 — FACILITY CONTEXT
+           =================================================== */
+        #s3 .context-grid { display:grid; grid-template-columns:1fr 1fr; gap:clamp(0.6rem,1.5vw,1.2rem); margin-top:var(--content-gap); }
+        @media (max-width:680px) { #s3 .context-grid { grid-template-columns:1fr; } }
+        #s3 .warning-box { margin-top:var(--content-gap); padding:clamp(0.55rem,1.3vw,0.9rem); background:rgba(239,83,80,0.07); border:1px solid rgba(239,83,80,0.3); border-radius:8px; display:flex; align-items:flex-start; gap:0.75em; }
+        #s3 .warn-icon { font-size:1.1em; flex-shrink:0; margin-top:0.05em; }
+        #s3 .warn-text { font-size:var(--small-size); color:rgba(240,200,190,0.85); font-weight:400; line-height:1.5; }
+
+        /* ===================================================
+           SLIDE 4 — EQUIPMENT
+           =================================================== */
+        #s4 .equip-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:clamp(0.6rem,1.5vw,1.2rem); margin-top:var(--content-gap); }
+        @media (max-width:700px) { #s4 .equip-grid { grid-template-columns:1fr; } }
+        #s4 .equip-card { padding:clamp(0.7rem,1.8vw,1.3rem); background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:10px; }
+        #s4 .equip-name { font-family:var(--font-display); font-weight:700; font-size:clamp(0.8rem,1.3vw,1rem); color:var(--text-primary); margin-bottom:0.3em; }
+        #s4 .equip-meta { font-family:var(--font-mono); font-size:var(--mono-size); color:var(--accent-cyan); letter-spacing:0.1em; margin-bottom:0.5em; }
+        #s4 .equip-specs { list-style:none; display:flex; flex-direction:column; gap:0.3em; }
+        #s4 .equip-specs li { font-size:var(--small-size); color:var(--text-secondary); font-weight:300; display:flex; gap:0.5em; }
+        #s4 .equip-specs li::before { content:"—"; color:var(--text-muted); flex-shrink:0; }
+        #s4 .delivery-tag { display:inline-block; margin-top:0.6em; font-family:var(--font-mono); font-size:var(--mono-size); padding:0.2em 0.6em; border-radius:4px; }
+        #s4 .delivery-soon { background:rgba(239,83,80,0.12); color:var(--accent-red); border:1px solid rgba(239,83,80,0.3); }
+        #s4 .delivery-norm { background:rgba(79,195,247,0.08); color:var(--accent-cyan); border:1px solid rgba(79,195,247,0.25); }
+
+        /* ===================================================
+           SLIDES 5 & 6 — PLACEMENT
+           =================================================== */
+        .placement-section { display:flex; flex-direction:column; gap:var(--element-gap); margin-top:var(--content-gap); }
+        .placement-row { display:grid; grid-template-columns:auto 1fr; gap:clamp(0.6rem,1.5vw,1.2rem); padding:clamp(0.55rem,1.3vw,0.9rem); background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:8px; align-items:start; }
+        .placement-row.good { border-color:rgba(102,187,106,0.25); }
+        .placement-row.warn { border-color:rgba(255,167,38,0.3); }
+        .placement-verdict { font-family:var(--font-mono); font-size:clamp(1rem,2vw,1.4rem); line-height:1; padding-top:0.1em; flex-shrink:0; }
+        .placement-name { font-family:var(--font-display); font-weight:700; font-size:clamp(0.78rem,1.2vw,0.95rem); color:var(--text-primary); margin-bottom:0.25em; }
+        .placement-body { font-size:var(--small-size); color:var(--text-secondary); font-weight:300; line-height:1.5; }
+
+        /* ===================================================
+           SLIDE 7 — ELECTRICAL
+           =================================================== */
+        #s7 .elec-alert { padding:clamp(0.55rem,1.2vw,0.9rem); background:rgba(239,83,80,0.08); border:1px solid rgba(239,83,80,0.35); border-radius:8px; margin-bottom:var(--content-gap); display:flex; align-items:center; gap:0.75em; }
+        #s7 .elec-alert-text { font-family:var(--font-display); font-weight:700; font-size:clamp(0.85rem,1.5vw,1.1rem); color:var(--accent-red); }
+        #s7 .elec-layout { display:grid; grid-template-columns:1fr 1fr; gap:clamp(0.8rem,2vw,1.8rem); }
+        @media (max-width:680px) { #s7 .elec-layout { grid-template-columns:1fr; } }
+
+        /* ===================================================
+           SLIDE 9 — LN2
+           =================================================== */
+        #s9 .ln2-layout { display:grid; grid-template-columns:1fr 1fr; gap:clamp(0.8rem,2vw,1.8rem); margin-top:var(--content-gap); }
+        @media (max-width:680px) { #s9 .ln2-layout { grid-template-columns:1fr; } }
+
+        /* ===================================================
+           SLIDE 10 — HVAC
+           =================================================== */
+        #s10 .hvac-options { display:grid; grid-template-columns:1fr 1fr; gap:clamp(0.6rem,1.5vw,1.2rem); margin-top:var(--content-gap); }
+        @media (max-width:680px) { #s10 .hvac-options { grid-template-columns:1fr; } }
+
+        /* ===================================================
+           SLIDE 12 — FOUNDATIONS
+           =================================================== */
+        #s12 .found-layout { display:grid; grid-template-columns:1fr 1fr; gap:clamp(0.8rem,2vw,1.8rem); margin-top:var(--content-gap); align-items:start; }
+        @media (max-width:680px) { #s12 .found-layout { grid-template-columns:1fr; } }
+
+        /* ===================================================
+           SLIDE 14 — TIMELINE
+           =================================================== */
+        #s14 .tracks { display:grid; grid-template-columns:1fr 1fr; gap:clamp(0.8rem,2vw,1.8rem); margin-top:var(--content-gap); }
+        @media (max-width:680px) { #s14 .tracks { grid-template-columns:1fr; } }
+        #s14 .track-title { font-family:var(--font-display); font-weight:700; font-size:clamp(0.8rem,1.3vw,1rem); color:var(--text-primary); margin-bottom:var(--element-gap); display:flex; align-items:center; gap:0.5em; }
+        #s14 .phase { display:flex; gap:0.7em; align-items:flex-start; padding:clamp(0.4rem,1vw,0.65rem); border-radius:6px; background:var(--bg-card); border:1px solid var(--border-subtle); margin-bottom:0.4em; }
+        #s14 .phase-wk { font-family:var(--font-mono); font-size:var(--mono-size); color:var(--accent-cyan); flex-shrink:0; min-width:4.5em; padding-top:0.05em; }
+        #s14 .phase-txt { font-size:var(--small-size); color:var(--text-secondary); font-weight:300; line-height:1.4; }
+
+        /* ===================================================
+           SLIDE 15 — BUDGET
+           =================================================== */
+        #s15 .budget-layout { display:grid; grid-template-columns:1fr 1fr; gap:clamp(0.8rem,2vw,1.8rem); margin-top:var(--content-gap); align-items:start; }
+        @media (max-width:680px) { #s15 .budget-layout { grid-template-columns:1fr; } }
+        #s15 .total-box { margin-top:var(--element-gap); padding:clamp(0.6rem,1.4vw,1rem); background:rgba(79,195,247,0.06); border:1px solid rgba(79,195,247,0.3); border-radius:8px; }
+        #s15 .total-num { font-family:var(--font-display); font-weight:800; font-size:clamp(1.4rem,3vw,2.2rem); color:var(--accent-cyan); }
+        #s15 .drivers { display:flex; flex-direction:column; gap:var(--element-gap); }
+        #s15 .driver-item { display:flex; align-items:flex-start; gap:0.5em; font-size:var(--small-size); color:var(--text-secondary); font-weight:300; }
+        #s15 .driver-item::before { content:"▸"; color:var(--accent-cyan); flex-shrink:0; }
+
+        /* ===================================================
+           SLIDES 16 & 17 — RISKS
+           =================================================== */
+        .risk-card { padding:clamp(0.65rem,1.6vw,1.15rem); border-radius:10px; background:var(--bg-card); border:1px solid var(--border-subtle); }
+        .risk-header { display:flex; align-items:center; gap:0.6em; margin-bottom:0.5em; }
+        .risk-title { font-family:var(--font-display); font-weight:700; font-size:clamp(0.82rem,1.3vw,1rem); color:var(--text-primary); }
+        .risk-section { margin-top:0.4em; }
+        .risk-section-label { font-family:var(--font-mono); font-size:var(--mono-size); letter-spacing:0.12em; color:var(--text-muted); margin-bottom:0.2em; }
+        .risk-section-body { font-size:var(--small-size); color:var(--text-secondary); font-weight:300; line-height:1.5; }
+
+        /* ===================================================
+           SLIDE 18 — NEXT STEPS
+           =================================================== */
+        #s18 .actions-grid { display:grid; grid-template-columns:1fr 1fr; gap:clamp(0.8rem,2vw,1.8rem); margin-top:var(--content-gap); }
+        @media (max-width:680px) { #s18 .actions-grid { grid-template-columns:1fr; } }
+        #s18 .action-item { display:flex; gap:0.75em; padding:clamp(0.5rem,1.2vw,0.85rem); background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:8px; align-items:flex-start; }
+        #s18 .action-num { font-family:var(--font-mono); font-weight:700; font-size:clamp(0.85rem,1.4vw,1.05rem); color:var(--accent-cyan); flex-shrink:0; min-width:1.8em; }
+        #s18 .action-text { font-size:var(--small-size); color:var(--text-secondary); font-weight:300; line-height:1.45; }
+        #s18 .decision-list { list-style:none; display:flex; flex-direction:column; gap:var(--element-gap); }
+        #s18 .decision-list li { font-size:var(--small-size); color:var(--text-secondary); font-weight:300; display:flex; align-items:flex-start; gap:0.5em; line-height:1.4; }
+        #s18 .decision-list li::before { content:"◆"; color:var(--accent-cyan); font-size:0.65em; flex-shrink:0; margin-top:0.2em; }
+    </style>
+</head>
+<body>
+
+<canvas class="star-canvas" id="starCanvas"></canvas>
+<div class="progress-bar" id="progressBar"></div>
+<nav class="nav-dots" id="navDots" aria-label="Slide navigation"></nav>
+<div class="keyboard-hint">↑↓ · Space · dots to navigate</div>
+
+<!-- ============================================================
+     SLIDE 1 — TITLE
+     ============================================================ -->
+<section class="slide visible" id="s1" aria-label="Title">
+    <div class="grid-bg"></div>
+    <div class="glow-orb glow-left"></div>
+    <div class="orbit-grp">
+        <div class="orbit o1">
+            <div class="sat-dot"></div>
+            <div class="globe"></div>
+        </div>
+        <div class="orbit o2"></div>
+    </div>
+    <div class="slide-counter">01 / 18</div>
+    <div class="title-wrap stagger">
+        <div class="mono-label reveal">Astranis Space Technologies · 2026</div>
+        <div class="h-rule reveal"></div>
+        <h1 class="reveal">Machine<br>Shop<br><em>Build-Out</em></h1>
+        <p class="sub reveal">CNC &amp; TVAC Equipment Installation — Pier 70, San Francisco<br><span style="opacity:0.5; font-size:0.9em;">Facilities Director</span></p>
+    </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 2 — EXECUTIVE SUMMARY
+     ============================================================ -->
+<section class="slide" id="s2" aria-label="Executive Summary">
+    <div class="grid-bg"></div>
+    <div class="glow-orb glow-right"></div>
+    <div class="slide-counter">02 / 18</div>
+    <div class="slide-content">
+        <div class="stagger">
+            <div class="mono-label reveal">Executive Summary</div>
+            <div class="h-rule reveal"></div>
+            <h2 class="section-title reveal">Three machines. Twelve weeks. One chance to get it right.</h2>
+        </div>
+        <div class="exec-grid stagger" style="margin-top:var(--content-gap);">
+            <div class="info-card reveal">
+                <div class="card-label">Scope</div>
+                <div class="card-title">3 Machines + Full Infrastructure</div>
+                <div class="card-body">DMG Mori DMU 40 PRO + PH 150 (CNC 1) · 2× Dynavac Rigel TVAC Chambers. Electrical · LN2 · Compressed air · DI water · HVAC · Foundations.</div>
+            </div>
+            <div class="info-card featured reveal">
+                <div class="card-label">Timeline</div>
+                <div class="card-title" style="color:var(--accent-cyan);">10 – 12 Weeks Total</div>
+                <div class="card-body">CNC 1 arrives in <strong style="color:var(--accent-red);">2 weeks.</strong><br>TVAC 1 &amp; 2 arrive in 2 months.<br>Two parallel tracks required.</div>
+            </div>
+            <div class="info-card reveal">
+                <div class="card-label">Budget Range</div>
+                <div class="big-num" style="font-size:clamp(1.2rem,2.5vw,1.8rem);">$283K – $627K</div>
+                <div class="card-body" style="margin-top:0.3em;">Range driven by foundation and HVAC scope decisions.</div>
+            </div>
+        </div>
+        <div class="decision-box reveal" style="margin-top:var(--element-gap);">
+            <div class="decision-title">// 3 key decisions needed from leadership</div>
+            <div class="decision-items">
+                <span class="d-item">① Budget authority &amp; ceiling</span>
+                <span class="d-item">② HVAC scope: enclosure vs. localized</span>
+                <span class="d-item">③ TVAC 2 placement approval</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 3 — FACILITY CONTEXT
+     ============================================================ -->
+<section class="slide" id="s3" aria-label="Facility Context">
+    <div class="grid-bg"></div>
+    <div class="glow-orb glow-left"></div>
+    <div class="slide-counter">03 / 18</div>
+    <div class="slide-content">
+        <div class="stagger">
+            <div class="mono-label reveal">Facility Context</div>
+            <div class="h-rule reveal"></div>
+            <h2 class="section-title reveal">Pier 70 — Dogpatch, San Francisco</h2>
+            <p class="body-text reveal" style="max-width:520px;">575 20th Street — Historic shipyard (Union Iron Works / Bethlehem Steel). Built warships in WWI &amp; WWII. Now: precision aerospace manufacturing.</p>
+        </div>
+        <div class="context-grid stagger" style="margin-top:var(--content-gap);">
+            <div class="info-card reveal">
+                <div class="card-label">Building Specs</div>
+                <ul class="check-list" style="margin-top:0.3em;">
+                    <li data-icon="📐">~137'-6" × 112'-1" footprint</li>
+                    <li data-icon="📏">~50 ft tall</li>
+                    <li data-icon="🏗️">Bare metal exterior, no wall insulation</li>
+                    <li data-icon="🪨">4" thick concrete slab throughout</li>
+                    <li data-icon="💨">4 roof exhaust fans installed</li>
+                </ul>
+            </div>
+            <div class="info-card reveal">
+                <div class="card-label">Services &amp; Occupancy</div>
+                <ul class="check-list" style="margin-top:0.3em;">
+                    <li data-icon="⚡">500A @ 480V electrical service</li>
+                    <li data-icon="👥">10 full-time workers</li>
+                    <li data-icon="🔧">8+ CNC machines already installed</li>
+                    <li data-icon="🧪">QC Lab · Hydrostatic test area</li>
+                    <li data-icon="🏭">Fixed layout — cannot relocate existing eq.</li>
+                </ul>
+            </div>
+        </div>
+        <div class="warning-box reveal" style="margin-top:var(--element-gap);">
+            <div class="warn-icon">⚠️</div>
+            <div class="warn-text"><strong>Critical constraint:</strong> Pier substructure — likely timber piles + bay fill beneath the slab. This is <strong>NOT</strong> slab-on-grade on solid ground. Structural assessment required before finalizing any machine locations.</div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 4 — EQUIPMENT BEING INSTALLED
+     ============================================================ -->
+<section class="slide" id="s4" aria-label="Equipment">
+    <div class="grid-bg"></div>
+    <div class="glow-orb glow-top"></div>
+    <div class="slide-counter">04 / 18</div>
+    <div class="slide-content">
+        <div class="stagger">
+            <div class="mono-label reveal">Equipment Being Installed</div>
+            <div class="h-rule reveal"></div>
+            <h2 class="section-title reveal">Three machines. Two workstreams.</h2>
+        </div>
+        <div class="equip-grid stagger" style="margin-top:var(--content-gap);">
+            <div class="equip-card reveal">
+                <div class="equip-meta">CNC 1</div>
+                <div class="equip-name">DMG Mori DMU 40 PRO + PH 150</div>
+                <ul class="equip-specs">
+                    <li>5-axis simultaneous milling</li>
+                    <li>5µm positioning accuracy</li>
+                    <li>32 kW spindle · 20,000 rpm</li>
+                    <li>30A / 480V 3-phase · 1 cfm air</li>
+                    <li>PH 150 automated pallet handler</li>
+                </ul>
+                <span class="delivery-tag delivery-soon">⚡ Arrives: 2 weeks</span>
+            </div>
+            <div class="equip-card reveal">
+                <div class="equip-meta">TVAC 1</div>
+                <div class="equip-name">Dynavac Rigel TVAC Chamber</div>
+                <ul class="equip-specs">
+                    <li>8–16 ft diameter (TBD)</li>
+                    <li>Thermal: -180°C to +150°C</li>
+                    <li>Base pressure: &lt;1×10⁻⁶ Torr</li>
+                    <li>80A / 208V · 3 gpm LN2 · 1 cfm air</li>
+                    <li>Stainless steel · LabVIEW controls</li>
+                </ul>
+                <span class="delivery-tag delivery-norm">🛸 Arrives: 2 months</span>
+            </div>
+            <div class="equip-card reveal" style="border-color:rgba(255,167,38,0.25);">
+                <div class="equip-meta" style="color:var(--accent-orange);">TVAC 2</div>
+                <div class="equip-name">Dynavac Rigel TVAC Chamber</div>
+                <ul class="equip-specs">
+                    <li>Identical to TVAC 1</li>
+                    <li>80A / 208V · 3 gpm LN2 · 1 cfm air</li>
+                    <li>Combined LN2 demand: 6 gpm peak</li>
+                </ul>
+                <span class="delivery-tag delivery-norm">🛸 Arrives: 2 months</span>
+                <div style="margin-top:0.6em; font-family:var(--font-mono); font-size:var(--mono-size); color:var(--accent-orange);">⚠ PLACEMENT: RELOCATION RECOMMENDED</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 5 — PLACEMENT: CNC 1
+     ============================================================ -->
+<section class="slide" id="s5" aria-label="CNC Placement">
+    <div class="grid-bg"></div>
+    <div class="glow-orb glow-right"></div>
+    <div class="slide-counter">05 / 18</div>
+    <div class="slide-content">
+        <div class="stagger">
+            <div class="mono-label reveal">Machine Placement · CNC 1</div>
+            <div class="h-rule reveal"></div>
+            <h2 class="section-title reveal">DMU 40 PRO — Upper-left CNC cluster</h2>
+        </div>
+        <div class="two-col stagger" style="margin-top:var(--content-gap);">
+            <div class="reveal">
+                <div style="display:flex; align-items:center; gap:0.6em; margin-bottom:var(--element-gap);">
+                    <span class="badge badge-green">✅ AGREE</span>
+                    <span style="font-size:var(--small-size); color:var(--text-muted);">with adjustments</span>
+                </div>
+                <div class="card-label" style="margin-bottom:0.4em;">Rationale</div>
+                <ul class="check-list">
+                    <li data-icon="✓">Clusters shared infrastructure — air, coolant, DI water, chip mgmt</li>
+                    <li data-icon="✓">Enables unified thermal enclosure for all precision CNC</li>
+                    <li data-icon="✓">Proximity to raw material storage — thermal equilibrium critical at 5µm</li>
+                    <li data-icon="✓">Near QC Lab — fast inspection turnaround</li>
+                    <li data-icon="✓">Near electrical room — shorter conduit runs</li>
+                </ul>
+            </div>
+            <div class="reveal">
+                <div class="card-label" style="margin-bottom:0.4em;">Required Adjustments</div>
+                <ul class="check-list">
+                    <li data-icon="📏">48" minimum clearance on PH 150 pallet load side</li>
+                    <li data-icon="↩">Orient chip conveyor away from pedestrian traffic paths</li>
+                    <li data-icon="🔬">Vibration survey + foundation assessment at this location</li>
+                    <li data-icon="📦">Raw material storage INSIDE conditioned zone (billets at ambient temp will drift at 5µm)</li>
+                    <li data-icon="⚡">Pull oversized conduit now — future Robo2Go automation</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 6 — PLACEMENT: TVAC 1 & 2
+     ============================================================ -->
+<section class="slide" id="s6" aria-label="TVAC Placement">
+    <div class="grid-bg"></div>
+    <div class="glow-orb glow-warn"></div>
+    <div class="slide-counter">06 / 18</div>
+    <div class="slide-content">
+        <div class="stagger">
+            <div class="mono-label reveal">Machine Placement · TVAC 1 &amp; 2</div>
+            <div class="h-rule reveal"></div>
+            <h2 class="section-title reveal">One location works. One needs to move.</h2>
+        </div>
+        <div class="placement-section stagger" style="margin-top:var(--content-gap);">
+            <div class="placement-row good reveal">
+                <div class="placement-verdict">✅</div>
+                <div>
+                    <div class="placement-name">TVAC 1 — Upper-left, near exterior wall &amp; electrical room</div>
+                    <div class="placement-body">Short LN2 piping runs · Exterior wall enables direct exhaust routing · Large open area · Adjacent to electrical room for transformer placement · Adequate rigging access.</div>
+                </div>
+            </div>
+            <div class="placement-row warn reveal">
+                <div class="placement-verdict">⚠️</div>
+                <div>
+                    <div class="placement-name" style="color:var(--accent-orange);">TVAC 2 — Center-right (near kitchen) — RELOCATE RECOMMENDED</div>
+                    <div class="placement-body"><strong style="color:var(--accent-red);">LN2 safety:</strong> Interior location places O₂ depletion risk at most occupied area. LN2 expands 695:1 — kitchen + workbenches are highest-risk zone. <strong style="color:var(--accent-orange);">Infrastructure cost:</strong> $30K–$50K more in piping + exhaust routing. <strong>Rigging:</strong> Threading 8–16 ft chamber through occupied interior is a serious logistical challenge.</div>
+                </div>
+            </div>
+            <div class="info-card featured reveal" style="padding:clamp(0.5rem,1.2vw,0.85rem);">
+                <div class="card-label">Proposed Alternative — Co-locate TVAC 2 with TVAC 1</div>
+                <div class="card-body">Same exterior wall → shared LN2 trunk line · shared O₂ safety zone · shared exhaust routing · single PPE station · simpler rigging path. Dramatically lower infrastructure cost.</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 7 — ELECTRICAL ⚠️
+     ============================================================ -->
+<section class="slide" id="s7" aria-label="Electrical">
+    <div class="grid-bg"></div>
+    <div class="glow-orb glow-danger"></div>
+    <div class="slide-counter">07 / 18</div>
+    <div class="slide-content">
+        <div class="stagger">
+            <div class="mono-label reveal">Infrastructure · Electrical</div>
+            <div class="h-rule reveal"></div>
+        </div>
+        <div class="elec-alert reveal">
+            <span style="font-size:1.3em;">⚡</span>
+            <div class="elec-alert-text">Potential Showstopper — We may be at or over capacity</div>
+        </div>
+        <div class="elec-layout stagger">
+            <div class="reveal">
+                <table class="data-table">
+                    <thead><tr><th>Load Category</th><th>Low (A)</th><th>High (A)</th></tr></thead>
+                    <tbody>
+                        <tr><td>Existing equipment running demand</td><td>340</td><td>470</td></tr>
+                        <tr><td>New equipment (CNC 1 + 2× TVAC)</td><td>115</td><td>140</td></tr>
+                        <tr class="danger-row"><td><strong>Combined running demand</strong></td><td><strong>455</strong></td><td><strong>610</strong></td></tr>
+                        <tr class="warn-row"><td>Building service capacity</td><td colspan="2" style="text-align:center;">500A</td></tr>
+                    </tbody>
+                </table>
+                <div style="margin-top:0.5em; font-size:var(--small-size); color:var(--text-muted);">Makino MAG 3.EX alone: ~100–125A at operating load</div>
+            </div>
+            <div class="reveal">
+                <div class="card-label" style="margin-bottom:0.4em;">Immediate Actions</div>
+                <ul class="check-list">
+                    <li data-icon="①">Obtain actual panel schedule — Week 1</li>
+                    <li data-icon="②">NEC Article 220 load calc by licensed electrician</li>
+                    <li data-icon="③">If upgrade needed: PG&E takes 8–12 weeks — engage now</li>
+                    <li data-icon="④">Order 480V→208V step-down transformers (2×, 45–75 kVA) — long lead</li>
+                </ul>
+                <div class="info-card warn" style="margin-top:var(--element-gap); padding:clamp(0.4rem,1vw,0.7rem);">
+                    <div class="card-body">Budget: <span class="accent-cyan">$30K–$45K</span> if adequate · <span class="accent-red">$45K–$65K+</span> if upgrade required</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 8 — COMPRESSED AIR & DI WATER
+     ============================================================ -->
+<section class="slide" id="s8" aria-label="Air and Water">
+    <div class="grid-bg"></div>
+    <div class="glow-orb glow-right"></div>
+    <div class="slide-counter">08 / 18</div>
+    <div class="slide-content">
+        <div class="stagger">
+            <div class="mono-label reveal">Infrastructure · Compressed Air &amp; DI Water</div>
+            <div class="h-rule reveal"></div>
+            <h2 class="section-title reveal">Manageable additions — confirm capacity first.</h2>
+        </div>
+        <div class="two-col stagger" style="margin-top:var(--content-gap);">
+            <div class="info-card reveal">
+                <div class="card-label">Compressed Air</div>
+                <div class="card-title">3 cfm new demand total</div>
+                <ul class="check-list" style="margin-top:0.4em;">
+                    <li data-icon="—">1 cfm per machine (CNC 1, TVAC 1, TVAC 2)</li>
+                    <li data-icon="—">Relatively small incremental load</li>
+                    <li data-icon="—">Route new drops with FRL units (filter, regulator, lubricator)</li>
+                    <li data-icon="—">Verify existing compressor utilization</li>
+                    <li data-icon="—">Confirm dew point + filtration specs for CNC</li>
+                </ul>
+                <div style="margin-top:0.6em; font-size:var(--small-size); color:var(--accent-cyan);">Budget: $8K–$20K</div>
+            </div>
+            <div class="info-card reveal">
+                <div class="card-label">DI Water</div>
+                <div class="card-title">CNC 1 coolant system</div>
+                <ul class="check-list" style="margin-top:0.4em;">
+                    <li data-icon="—">DI water preferred — prevents mineral buildup on precision surfaces</li>
+                    <li data-icon="—">Confirm capacity of existing DI filter on layout</li>
+                    <li data-icon="—">Route supply lines to CNC zone</li>
+                    <li data-icon="—">Include drain provisions for maintenance</li>
+                    <li data-icon="—">Upgrade DI system if insufficient capacity</li>
+                </ul>
+                <div style="margin-top:0.6em; font-size:var(--small-size); color:var(--accent-cyan);">Budget: $5K–$15K</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 9 — LN2 SYSTEM
+     ============================================================ -->
+<section class="slide" id="s9" aria-label="LN2 System">
+    <div class="grid-bg"></div>
+    <div class="glow-orb glow-left"></div>
+    <div class="slide-counter">09 / 18</div>
+    <div class="slide-content">
+        <div class="stagger">
+            <div class="mono-label reveal">Infrastructure · Liquid Nitrogen System</div>
+            <div class="h-rule reveal"></div>
+            <h2 class="section-title reveal">The largest infrastructure item on the project.</h2>
+        </div>
+        <div class="ln2-layout stagger">
+            <div class="reveal">
+                <div class="card-label" style="margin-bottom:0.4em;">System Design</div>
+                <ul class="check-list">
+                    <li data-icon="🔵">2 chambers × 3 gpm = <strong style="color:var(--accent-cyan);">6 gpm peak</strong></li>
+                    <li data-icon="🔵">Exterior bulk tank: 1,500–3,000 gallon vacuum-insulated cryogenic tank on concrete pad</li>
+                    <li data-icon="🔵">Vacuum-insulated distribution piping to each chamber</li>
+                    <li data-icon="🔵">Phase separator + pressure regulation at distribution point</li>
+                    <li data-icon="🔵">Individual isolation valves + relief valves per chamber</li>
+                    <li data-icon="🔵">Delivery truck access required — confirm pad location + turnaround</li>
+                </ul>
+            </div>
+            <div class="reveal">
+                <div class="card-label" style="margin-bottom:0.4em;">Safety Systems (mandatory)</div>
+                <ul class="check-list">
+                    <li data-icon="⚠️">Continuous O₂ monitoring — alarm at 19.5% (OSHA threshold)</li>
+                    <li data-icon="⚠️">Audible + visual alarms at each chamber + along piping routes</li>
+                    <li data-icon="⚠️">Emergency ventilation — rapid air exchange on leak event</li>
+                    <li data-icon="⚠️">PPE stations: cryo gloves, face shield, safety shoes</li>
+                    <li data-icon="⚠️">LN2 safety training for ALL personnel (not just TVAC ops)</li>
+                </ul>
+                <div class="info-card danger" style="margin-top:var(--element-gap); padding:clamp(0.4rem,1vw,0.7rem);">
+                    <div class="card-body">Budget: <span class="accent-cyan">$80K–$150K</span> total · Long-lead: order immediately upon project approval</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 10 — HVAC / THERMAL
+     ============================================================ -->
+<section class="slide" id="s10" aria-label="HVAC">
+    <div class="grid-bg"></div>
+    <div class="glow-orb glow-top"></div>
+    <div class="slide-counter">10 / 18</div>
+    <div class="slide-content">
+        <div class="stagger">
+            <div class="mono-label reveal">Infrastructure · Thermal / HVAC</div>
+            <div class="h-rule reveal"></div>
+            <h2 class="section-title reveal">Highest variability item — needs a leadership decision.</h2>
+        </div>
+        <div class="info-card danger reveal" style="margin-top:var(--content-gap); padding:clamp(0.5rem,1.2vw,0.85rem);">
+            <div style="display:flex; align-items:center; gap:0.6em;">
+                <span>⚠️</span>
+                <div class="card-body"><strong style="color:var(--text-primary);">Critical:</strong> Raw material MUST be stored INSIDE conditioned zone. Billets brought in from ambient will expand mid-cut, making 5µm tolerances unachievable. Makino requires 70°F ±2°F. CNC 1 at 5µm — same standard recommended.</div>
+            </div>
+        </div>
+        <div class="hvac-options stagger" style="margin-top:var(--element-gap);">
+            <div class="info-card reveal" style="border-color:rgba(79,195,247,0.25);">
+                <div class="card-label">Option A — Recommended Starting Point</div>
+                <div class="card-title">Localized thermal enclosure around CNC cluster</div>
+                <div class="card-body">Enclose the precision CNC zone (DMU 40 PRO units, Makino, HAAS) with insulated walls + dedicated precision HVAC. Lower cost. Protects highest-tolerance machines.</div>
+                <div style="margin-top:0.5em; font-size:var(--small-size); color:var(--accent-cyan);">Est: $50K–$80K</div>
+            </div>
+            <div class="info-card reveal">
+                <div class="card-label">Option B — More Robust</div>
+                <div class="card-title">Broader zone conditioning</div>
+                <div class="card-body">Condition a larger section of the shop floor. More effective for thermal equilibrium across the full material-to-machine workflow. Higher cost, more complex in a 50 ft bare-metal building.</div>
+                <div style="margin-top:0.5em; font-size:var(--small-size); color:var(--accent-cyan);">Est: $80K–$120K</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 11 — CNC SUPPORT SYSTEMS
+     ============================================================ -->
+<section class="slide" id="s11" aria-label="CNC Support">
+    <div class="grid-bg"></div>
+    <div class="glow-orb glow-right"></div>
+    <div class="slide-counter">11 / 18</div>
+    <div class="slide-content">
+        <div class="stagger">
+            <div class="mono-label reveal">Infrastructure · CNC Support Systems</div>
+            <div class="h-rule reveal"></div>
+            <h2 class="section-title reveal">Coolant · Chips · Waste · Containment</h2>
+        </div>
+        <div class="two-col stagger" style="margin-top:var(--content-gap);">
+            <div class="reveal">
+                <div class="card-label" style="margin-bottom:0.4em;">Coolant System</div>
+                <ul class="check-list" style="margin-bottom:var(--content-gap);">
+                    <li data-icon="—">DI water preferred for coolant mixing</li>
+                    <li data-icon="—">Coolant mixing station with supply + return lines</li>
+                    <li data-icon="—">Tramp oil separator — integrated or standalone skimmer/coalescer</li>
+                    <li data-icon="—">Spill containment: drip pans + floor containment</li>
+                </ul>
+                <div class="card-label" style="margin-bottom:0.4em;">Chip Management</div>
+                <ul class="check-list">
+                    <li data-icon="♻️">Segregated bins by material type</li>
+                    <li data-icon="🔵">Aluminum · Steel · Stainless · Titanium</li>
+                    <li data-icon="⚠️">No mixed chips — contaminate recycling streams</li>
+                    <li data-icon="🏷️">Color-coded and labeled bins</li>
+                </ul>
+            </div>
+            <div class="info-card reveal" style="align-self:start;">
+                <div class="card-label">Waste Streams to Manage</div>
+                <ul class="check-list" style="margin-top:0.3em;">
+                    <li data-icon="—">Spent metalworking coolant (may be hazardous)</li>
+                    <li data-icon="—">Tramp oil / waste oil</li>
+                    <li data-icon="—">Metal chips contaminated with coolant</li>
+                    <li data-icon="—">Vacuum pump oil (TVAC)</li>
+                </ul>
+                <div style="margin-top:var(--element-gap); padding:clamp(0.4rem,1vw,0.7rem); background:rgba(79,195,247,0.05); border:1px solid rgba(79,195,247,0.2); border-radius:6px;">
+                    <div class="card-body">Budget: <span class="accent-cyan">$10K–$25K</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 12 — FOUNDATIONS & STRUCTURAL
+     ============================================================ -->
+<section class="slide" id="s12" aria-label="Foundations">
+    <div class="grid-bg"></div>
+    <div class="glow-orb glow-danger"></div>
+    <div class="slide-counter">12 / 18</div>
+    <div class="slide-content">
+        <div class="stagger">
+            <div class="mono-label reveal">Infrastructure · Foundations &amp; Structural</div>
+            <div class="h-rule reveal"></div>
+            <h2 class="section-title reveal">The single highest-priority action item.</h2>
+        </div>
+        <div class="found-layout stagger">
+            <div class="reveal">
+                <div class="card-label" style="margin-bottom:0.4em;">The Pier 70 Problem</div>
+                <ul class="check-list" style="margin-bottom:var(--element-gap);">
+                    <li data-icon="⚠️">4" slab over timber piles + bay fill — NOT standard slab-on-grade</li>
+                    <li data-icon="⚠️">DMU 40 PRO: dead-flat, vibration-free surface required at 5µm</li>
+                    <li data-icon="⚠️">TVAC chambers: 10,000–20,000+ lbs point loads</li>
+                    <li data-icon="⚠️">Ambient pier vibration from tidal, wind, traffic — must measure</li>
+                </ul>
+                <div class="info-card featured" style="padding:clamp(0.4rem,1vw,0.7rem);">
+                    <div class="card-body">The upside: building was designed for <strong style="color:var(--text-primary);">shipbuilding</strong> — may be more robust than 4" spec suggests. Request historic drawings from Port of SF.</div>
+                </div>
+            </div>
+            <div class="reveal">
+                <div class="card-label" style="margin-bottom:0.4em;">Foundation Options</div>
+                <table class="data-table" style="font-size:var(--small-size);">
+                    <thead><tr><th>Solution</th><th>Cost</th></tr></thead>
+                    <tbody>
+                        <tr><td>Epoxy grout leveling pads</td><td class="accent-cyan">$3K–$8K</td></tr>
+                        <tr><td>Vibration-isolating mounts</td><td class="accent-cyan">$5K–$12K</td></tr>
+                        <tr><td>Reinforced machine pads</td><td class="accent-warm">$8K–$20K</td></tr>
+                        <tr><td>Isolated machine foundations</td><td class="accent-warm">$15K–$30K</td></tr>
+                        <tr><td>Micro-piled foundations (worst case)</td><td class="accent-red">$30K–$60K+</td></tr>
+                    </tbody>
+                </table>
+                <div style="margin-top:var(--element-gap); font-size:var(--small-size); color:var(--text-muted);">Structural PE assessment: $5K–$10K → tells us which scenario we're in. <strong style="color:var(--accent-red);">CNC 1 arrives in 2 weeks.</strong></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 13 — SAFETY & COMPLIANCE
+     ============================================================ -->
+<section class="slide" id="s13" aria-label="Safety">
+    <div class="grid-bg"></div>
+    <div class="glow-orb glow-warn"></div>
+    <div class="slide-counter">13 / 18</div>
+    <div class="slide-content">
+        <div class="stagger">
+            <div class="mono-label reveal">Safety &amp; Compliance</div>
+            <div class="h-rule reveal"></div>
+            <h2 class="section-title reveal">LN2 · HazWaste · Permits</h2>
+        </div>
+        <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:clamp(0.5rem,1.3vw,1rem); margin-top:var(--content-gap);" class="stagger">
+            <div class="info-card reveal">
+                <div class="card-label">LN2 / O₂ Safety</div>
+                <ul class="check-list" style="margin-top:0.3em;">
+                    <li data-icon="—">Continuous O₂ monitors — 19.5% alarm</li>
+                    <li data-icon="—">Audible + visual alarms</li>
+                    <li data-icon="—">Emergency ventilation system</li>
+                    <li data-icon="—">PPE stations at each chamber</li>
+                    <li data-icon="—">Training: all personnel</li>
+                    <li data-icon="—">Emergency procedures posted</li>
+                </ul>
+            </div>
+            <div class="info-card reveal">
+                <div class="card-label">HazWaste</div>
+                <ul class="check-list" style="margin-top:0.3em;">
+                    <li data-icon="—">Cal/EPA Generator ID (DTSC) — verify or apply</li>
+                    <li data-icon="—">Spent coolant management</li>
+                    <li data-icon="—">Tramp oil / waste oil disposal</li>
+                    <li data-icon="—">Contaminated chip characterization</li>
+                    <li data-icon="—">90-day accumulation rule</li>
+                    <li data-icon="—">Annual DTSC reporting</li>
+                </ul>
+            </div>
+            <div class="info-card warn reveal">
+                <div class="card-label">Permits Required</div>
+                <ul class="check-list" style="margin-top:0.3em;">
+                    <li data-icon="—">SF DBI: Building permit</li>
+                    <li data-icon="—">SF DBI: Electrical permit</li>
+                    <li data-icon="—">SF DBI: Mechanical permit</li>
+                    <li data-icon="—">SFFD: Fire review (LN2)</li>
+                    <li data-icon="—">BAAQMD: Air quality</li>
+                    <li data-icon="—">Historic Pier 70 review</li>
+                </ul>
+                <div style="margin-top:0.5em; font-size:var(--small-size); color:var(--accent-orange);">⚠ Engage SF DBI Week 1 — can take weeks to months</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 14 — TIMELINE
+     ============================================================ -->
+<section class="slide" id="s14" aria-label="Timeline">
+    <div class="grid-bg"></div>
+    <div class="glow-orb glow-right"></div>
+    <div class="slide-counter">14 / 18</div>
+    <div class="slide-content">
+        <div class="stagger">
+            <div class="mono-label reveal">Project Timeline</div>
+            <div class="h-rule reveal"></div>
+            <h2 class="section-title reveal">Two parallel tracks. One critical path.</h2>
+        </div>
+        <div class="tracks stagger" style="margin-top:var(--content-gap);">
+            <div class="reveal">
+                <div class="track-title">
+                    <span class="badge badge-red">Track A</span> CNC 1 — <span class="accent-red">2 weeks</span>
+                </div>
+                <div class="phase">
+                    <div class="phase-wk">Wk 1</div>
+                    <div class="phase-txt">Structural PE · electrical load study · permits submitted · equipment staging plan</div>
+                </div>
+                <div class="phase">
+                    <div class="phase-wk">Wk 2–4</div>
+                    <div class="phase-txt">Foundation work (if needed) · electrical rough-in · compressed air + DI water routing · coolant system prep</div>
+                </div>
+                <div class="phase">
+                    <div class="phase-wk">Wk 3–4</div>
+                    <div class="phase-txt">CNC 1 rigging + placement · leveling · utility connections · DMG Mori commissioning</div>
+                </div>
+                <div class="info-card danger" style="margin-top:0.4em; padding:clamp(0.35rem,0.9vw,0.6rem);">
+                    <div class="card-body" style="font-size:var(--small-size);">⚠ If site not ready at delivery, machine must be staged — plan now</div>
+                </div>
+            </div>
+            <div class="reveal">
+                <div class="track-title">
+                    <span class="badge" style="background:rgba(79,195,247,0.1); color:var(--accent-cyan); border:1px solid rgba(79,195,247,0.3);">Track B</span> TVAC 1 &amp; 2 — 2 months
+                </div>
+                <div class="phase">
+                    <div class="phase-wk">Wk 1</div>
+                    <div class="phase-txt">Order transformers + LN2 tank (long lead items)</div>
+                </div>
+                <div class="phase">
+                    <div class="phase-wk">Wk 3–8</div>
+                    <div class="phase-txt">Foundation · electrical (transformers + circuits) · LN2 bulk tank + piping · exhaust routing · O₂ monitoring</div>
+                </div>
+                <div class="phase">
+                    <div class="phase-wk">Wk 4–8</div>
+                    <div class="phase-txt">HVAC thermal enclosure build</div>
+                </div>
+                <div class="phase">
+                    <div class="phase-wk">Wk 8–10</div>
+                    <div class="phase-txt">TVAC rigging + placement · LN2 hookup · Dynavac startup service</div>
+                </div>
+                <div class="phase">
+                    <div class="phase-wk">Wk 10–12</div>
+                    <div class="phase-txt">Full commissioning · safety validation · operator training · as-built docs</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 15 — BUDGET SUMMARY
+     ============================================================ -->
+<section class="slide" id="s15" aria-label="Budget">
+    <div class="grid-bg"></div>
+    <div class="glow-orb glow-top"></div>
+    <div class="slide-counter">15 / 18</div>
+    <div class="slide-content">
+        <div class="stagger">
+            <div class="mono-label reveal">Budget Summary</div>
+            <div class="h-rule reveal"></div>
+            <h2 class="section-title reveal">Mid-level accuracy. SF labor rates. Ex-equipment.</h2>
+        </div>
+        <div class="budget-layout stagger" style="margin-top:var(--content-gap);">
+            <div class="reveal">
+                <table class="data-table">
+                    <thead><tr><th>Category</th><th>Low</th><th>High</th></tr></thead>
+                    <tbody>
+                        <tr><td>Site Prep &amp; Foundations</td><td>$25K</td><td>$60K</td></tr>
+                        <tr><td>Rigging &amp; Equipment Placement</td><td>$15K</td><td>$35K</td></tr>
+                        <tr><td>Electrical</td><td>$30K</td><td>$65K</td></tr>
+                        <tr><td>Compressed Air</td><td>$8K</td><td>$20K</td></tr>
+                        <tr><td>DI Water / Plumbing</td><td>$5K</td><td>$15K</td></tr>
+                        <tr style="color:var(--accent-cyan);"><td>LN2 System</td><td>$80K</td><td>$150K</td></tr>
+                        <tr style="color:var(--accent-warm);"><td>HVAC / Thermal Control</td><td>$50K</td><td>$120K</td></tr>
+                        <tr><td>Coolant, Chip &amp; Waste</td><td>$10K</td><td>$25K</td></tr>
+                        <tr><td>Safety &amp; Compliance</td><td>$8K</td><td>$20K</td></tr>
+                        <tr><td>Permits &amp; Engineering</td><td>$15K</td><td>$35K</td></tr>
+                        <tr><td>Contingency (15%)</td><td>$37K</td><td>$82K</td></tr>
+                        <tr class="total-row"><td><strong>TOTAL</strong></td><td><strong>$283K</strong></td><td><strong>$627K</strong></td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="reveal">
+                <div class="total-box">
+                    <div style="font-family:var(--font-mono); font-size:var(--mono-size); color:var(--text-muted); margin-bottom:0.3em; letter-spacing:0.12em;">TOTAL RANGE</div>
+                    <div class="total-num">$283K – $627K</div>
+                </div>
+                <div style="margin-top:var(--content-gap);">
+                    <div class="card-label" style="margin-bottom:0.5em;">Key Budget Drivers</div>
+                    <div class="drivers">
+                        <div class="driver-item">Foundation scope — minor grouting vs. isolated pads</div>
+                        <div class="driver-item">HVAC scope — localized enclosure vs. broader zone</div>
+                        <div class="driver-item">Electrical — adequate capacity vs. PG&E service upgrade</div>
+                        <div class="driver-item">LN2 piping length — exterior wall vs. interior placement</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 16 — RISK #1: ELECTRICAL
+     ============================================================ -->
+<section class="slide" id="s16" aria-label="Risk 1">
+    <div class="grid-bg"></div>
+    <div class="glow-orb glow-danger"></div>
+    <div class="slide-counter">16 / 18</div>
+    <div class="slide-content">
+        <div class="stagger">
+            <div class="mono-label reveal">Risk Register</div>
+            <div class="h-rule reveal"></div>
+            <h2 class="section-title reveal">Risk #1 — Electrical Capacity</h2>
+        </div>
+        <div class="risk-card reveal" style="margin-top:var(--content-gap);">
+            <div class="risk-header">
+                <span class="risk-tag risk-high">HIGH IMPACT</span>
+                <span class="risk-title">Potential showstopper — utility service upgrade required</span>
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:clamp(0.6rem,1.5vw,1.2rem); margin-top:0.4em;">
+                <div>
+                    <div class="risk-section-label">The Risk</div>
+                    <div class="risk-section-body">Combined running demand of 455–610A against a 500A service. If the Makino runs a heavy cut while both TVACs operate, we exceed capacity.</div>
+                </div>
+                <div>
+                    <div class="risk-section-label">Impact</div>
+                    <div class="risk-section-body">PG&E upgrade scheduling alone = 8–12 weeks. New panel + feeders = additional 2–4 weeks. Total project delay: <strong style="color:var(--accent-red);">2–3 months.</strong> Cost: +$15K–$40K.</div>
+                </div>
+                <div>
+                    <div class="risk-section-label">Mitigation</div>
+                    <div class="risk-section-body">Panel schedule + NEC load calc: Week 1. Pre-engage PG&E before results even arrive. Design load shedding interlocks as contingency. Install demand monitoring.</div>
+                </div>
+            </div>
+        </div>
+        <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:clamp(0.5rem,1.2vw,1rem); margin-top:var(--content-gap);" class="stagger">
+            <div class="info-card danger reveal">
+                <div class="card-label">If Upgrade Needed</div>
+                <div class="big-num" style="font-size:clamp(1.3rem,2.8vw,2rem); color:var(--accent-red);">+$15K–$40K</div>
+                <div class="card-body" style="margin-top:0.2em;">Additional cost for 500A→800A+ service upgrade</div>
+            </div>
+            <div class="info-card danger reveal">
+                <div class="card-label">PG&E Lead Time</div>
+                <div class="big-num" style="font-size:clamp(1.3rem,2.8vw,2rem); color:var(--accent-red);">8–12 wk</div>
+                <div class="card-body" style="margin-top:0.2em;">Scheduling alone — before any physical work begins</div>
+            </div>
+            <div class="info-card reveal">
+                <div class="card-label">Transformer Lead Time</div>
+                <div class="big-num" style="font-size:clamp(1.3rem,2.8vw,2rem);">4–8 wk</div>
+                <div class="card-body" style="margin-top:0.2em;">2× 480V→208V step-down (45–75 kVA each) — order Week 1</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 17 — RISKS #2 & #3
+     ============================================================ -->
+<section class="slide" id="s17" aria-label="Risks 2 and 3">
+    <div class="grid-bg"></div>
+    <div class="glow-orb glow-warn"></div>
+    <div class="slide-counter">17 / 18</div>
+    <div class="slide-content">
+        <div class="stagger">
+            <div class="mono-label reveal">Risk Register</div>
+            <div class="h-rule reveal"></div>
+            <h2 class="section-title reveal">Risk #2 — Foundation &nbsp;·&nbsp; Risk #3 — Permitting</h2>
+        </div>
+        <div class="two-col stagger" style="margin-top:var(--content-gap);">
+            <div class="risk-card reveal" style="border-color:rgba(239,83,80,0.25);">
+                <div class="risk-header">
+                    <span class="risk-tag risk-high">HIGH</span>
+                    <span class="risk-title">Foundation / Structural Adequacy</span>
+                </div>
+                <div class="risk-section">
+                    <div class="risk-section-label">The Risk</div>
+                    <div class="risk-section-body">Timber pile substructure + thin slab + ambient pier vibration. CNC 1 at 5µm may be unusable. TVACs at 10,000–20,000+ lbs may overload the slab. <strong style="color:var(--accent-red);">CNC 1 arrives in 2 weeks.</strong></div>
+                </div>
+                <div class="risk-section" style="margin-top:0.5em;">
+                    <div class="risk-section-label">Impact</div>
+                    <div class="risk-section-body">$30K–$60K foundation remediation. 3–4 week schedule slip. Machine idle on arrival while foundations cure.</div>
+                </div>
+                <div class="risk-section" style="margin-top:0.5em;">
+                    <div class="risk-section-label">Mitigation</div>
+                    <div class="risk-section-body">Structural PE engagement — Week 1, critical path. Ambient vibration survey 24–48 hrs. Request historic construction drawings from Port of SF / Pier 70 archives.</div>
+                </div>
+            </div>
+            <div class="risk-card reveal" style="border-color:rgba(255,167,38,0.25);">
+                <div class="risk-header">
+                    <span class="risk-tag risk-med">MED-HIGH</span>
+                    <span class="risk-title">SF Permitting Delays</span>
+                </div>
+                <div class="risk-section">
+                    <div class="risk-section-label">The Risk</div>
+                    <div class="risk-section-body">SF DBI + SFFD fire review + historic Pier 70 review could take weeks to months. Building, electrical, mechanical, and air quality permits all required.</div>
+                </div>
+                <div class="risk-section" style="margin-top:0.5em;">
+                    <div class="risk-section-label">Impact</div>
+                    <div class="risk-section-body">Blocks construction start for all permit-required work. Particularly acute for CNC 1 track given 2-week delivery.</div>
+                </div>
+                <div class="risk-section" style="margin-top:0.5em;">
+                    <div class="risk-section-label">Mitigation</div>
+                    <div class="risk-section-body">Submit applications Week 1 — don't wait for final engineering. Engage SF DBI expediter. Identify permit-free prep work that can proceed immediately. Confirm any Pier 70 blanket permits from landlord.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 18 — NEXT STEPS
+     ============================================================ -->
+<section class="slide" id="s18" aria-label="Next Steps">
+    <div class="grid-bg"></div>
+    <div class="glow-orb glow-right"></div>
+    <div class="slide-counter">18 / 18</div>
+    <div class="slide-content">
+        <div class="stagger">
+            <div class="mono-label reveal">Questions · Assumptions · Next Steps</div>
+            <div class="h-rule reveal"></div>
+            <h2 class="section-title reveal">Four things this week. Four decisions needed.</h2>
+        </div>
+        <div class="actions-grid stagger" style="margin-top:var(--content-gap);">
+            <div>
+                <div class="card-label" style="margin-bottom:0.5em;">Immediate Actions — This Week</div>
+                <div class="action-item reveal">
+                    <div class="action-num">01</div>
+                    <div class="action-text">Obtain electrical panel schedule + engage licensed electrician for NEC Article 220 load calculation</div>
+                </div>
+                <div class="action-item reveal" style="margin-top:0.35em;">
+                    <div class="action-num">02</div>
+                    <div class="action-text">Engage structural PE for slab assessment, point-load analysis, and 24–48 hr ambient vibration survey at proposed machine locations</div>
+                </div>
+                <div class="action-item reveal" style="margin-top:0.35em;">
+                    <div class="action-num">03</div>
+                    <div class="action-text">Order 480V→208V step-down transformers (2×, 45–75 kVA each) — long-lead procurement</div>
+                </div>
+                <div class="action-item reveal" style="margin-top:0.35em;">
+                    <div class="action-num">04</div>
+                    <div class="action-text">Schedule TVAC 2 placement review with production area owners — bring relocation analysis</div>
+                </div>
+            </div>
+            <div>
+                <div class="card-label" style="margin-bottom:0.5em;">Key Decisions Needed from Leadership</div>
+                <div class="info-card featured reveal" style="padding:clamp(0.6rem,1.4vw,1rem);">
+                    <ul class="decision-list">
+                        <li>Budget authority and ceiling — bottom-up estimate or fixed cap?</li>
+                        <li>HVAC scope decision — localized CNC enclosure (Option A) vs. broader zone (Option B)</li>
+                        <li>TVAC 2 relocation approval — exterior wall co-location with TVAC 1</li>
+                        <li>Staging plan — if CNC 1 arrives before site ready, is staging acceptable?</li>
+                    </ul>
+                </div>
+                <div class="info-card" style="margin-top:var(--element-gap); padding:clamp(0.5rem,1.2vw,0.85rem);">
+                    <div class="card-label">Key Assumption</div>
+                    <div class="card-body">Machines are procured / on order. This project covers installation infrastructure only. No overhead crane assumed in building.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     JAVASCRIPT — Presentation Controller
+     ============================================================ -->
+<script>
+/* === STAR FIELD === */
+(function() {
+    const canvas = document.getElementById('starCanvas');
+    const ctx = canvas.getContext('2d');
+    function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+    resize();
+    window.addEventListener('resize', resize);
+    const stars = Array.from({length: 130}, () => ({
+        x: Math.random(), y: Math.random(),
+        r: Math.random() * 1.1 + 0.2,
+        o: Math.random() * 0.55 + 0.1,
+        t: Math.random() * Math.PI * 2
+    }));
+    let f = 0;
+    function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        f++;
+        stars.forEach(s => {
+            const fl = 0.85 + 0.15 * Math.sin(f * 0.014 + s.t);
+            ctx.beginPath();
+            ctx.arc(s.x * canvas.width, s.y * canvas.height, s.r, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(200,220,255,${s.o * fl})`;
+            ctx.fill();
+        });
+        requestAnimationFrame(draw);
+    }
+    draw();
+})();
+
+/* === SLIDE CONTROLLER === */
+class SlidePresentation {
+    constructor() {
+        this.slides = Array.from(document.querySelectorAll('.slide'));
+        this.current = 0;
+        this.bar = document.getElementById('progressBar');
+        this.navEl = document.getElementById('navDots');
+        this.buildDots();
+        this.observe();
+        this.setupKeys();
+        this.setupWheel();
+        this.setupTouch();
+        this.mark(0);
+    }
+    buildDots() {
+        this.slides.forEach((_, i) => {
+            const d = document.createElement('button');
+            d.className = 'nav-dot';
+            d.setAttribute('aria-label', `Slide ${i + 1}`);
+            d.addEventListener('click', () => this.go(i));
+            this.navEl.appendChild(d);
+        });
+    }
+    observe() {
+        const io = new IntersectionObserver(entries => {
+            entries.forEach(e => {
+                if (e.isIntersecting) {
+                    e.target.classList.add('visible');
+                    const idx = this.slides.indexOf(e.target);
+                    if (idx !== -1) this.mark(idx);
+                }
+            });
+        }, { threshold: 0.55 });
+        this.slides.forEach(s => io.observe(s));
+    }
+    mark(idx) {
+        this.current = idx;
+        this.bar.style.width = (idx / (this.slides.length - 1) * 100) + '%';
+        this.navEl.querySelectorAll('.nav-dot').forEach((d, i) => d.classList.toggle('active', i === idx));
+    }
+    go(idx) {
+        idx = Math.max(0, Math.min(this.slides.length - 1, idx));
+        this.slides[idx].scrollIntoView({ behavior: 'smooth' });
+    }
+    setupKeys() {
+        document.addEventListener('keydown', e => {
+            switch(e.key) {
+                case 'ArrowDown': case 'ArrowRight': case ' ': e.preventDefault(); this.go(this.current + 1); break;
+                case 'ArrowUp': case 'ArrowLeft': e.preventDefault(); this.go(this.current - 1); break;
+                case 'Home': e.preventDefault(); this.go(0); break;
+                case 'End': e.preventDefault(); this.go(this.slides.length - 1); break;
+            }
+        });
+    }
+    setupWheel() {
+        let t = null;
+        window.addEventListener('wheel', e => {
+            clearTimeout(t);
+            t = setTimeout(() => {
+                if (e.deltaY > 30) this.go(this.current + 1);
+                if (e.deltaY < -30) this.go(this.current - 1);
+            }, 50);
+        }, { passive: true });
+    }
+    setupTouch() {
+        let sy = 0, sx = 0;
+        window.addEventListener('touchstart', e => { sy = e.touches[0].clientY; sx = e.touches[0].clientX; }, { passive: true });
+        window.addEventListener('touchend', e => {
+            const dy = sy - e.changedTouches[0].clientY;
+            const dx = sx - e.changedTouches[0].clientX;
+            if (Math.abs(dy) > Math.abs(dx) && Math.abs(dy) > 40) this.go(this.current + (dy > 0 ? 1 : -1));
+        }, { passive: true });
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => { window._pres = new SlidePresentation(); });
+</script>
+</body>
+</html>

@@ -49,6 +49,17 @@ Install and commission three pieces of heavy equipment in the Astranis machine s
 
 A polished leadership presentation (~45 minutes) covering all of the above, suitable for funding approval and project kickoff.
 
+### ⚠️ Immediate Action Items (Week 1 — Before Any Other Work)
+
+These four items are on the critical path and must be initiated immediately upon project approval:
+
+| # | Action | Owner | Why It's Urgent |
+|---|---|---|---|
+| 1 | **Obtain electrical panel schedule** and engage licensed electrician for NEC load calculation | Facilities | Our load analysis suggests we're at or over 500A service capacity. If a PG&E upgrade is needed, it takes 8-12 weeks. |
+| 2 | **Engage structural engineer (PE)** for slab assessment, point-load analysis, and ambient vibration survey at proposed machine locations | Facilities | Foundation design → pour → cure time is on the critical path. CNC 1 arrives in 2 weeks. |
+| 3 | **Order 480V-to-208V step-down transformers** (2×, 45-75 kVA each) | Facilities / Procurement | Long-lead item required for TVAC electrical circuits. |
+| 4 | **Schedule TVAC 2 placement review** with production area owners | Facilities + Production | We are recommending relocation from interior to exterior wall. Need alignment before infrastructure design proceeds. |
+
 ---
 
 ## 2. Facility Context
@@ -104,7 +115,7 @@ The floor is already well-populated with the following major equipment zones (al
 ### Electrical Service
 
 - **Building Service:** 500A @ 480V
-- **Concern:** The existing CNC machines represent a significant electrical load. Before adding new equipment, a load analysis is required to determine remaining capacity. The Makino MAG 3.EX alone may draw 60-100A.
+- **⚠️ Concern — Potential Showstopper:** Our preliminary load analysis (see Section 5.1 for full detail) estimates existing equipment running demand at 340–470A. Adding the three new machines brings the combined running demand to an estimated 455–610A against a 500A service. **We are likely at or over capacity.** The Makino MAG 3.EX alone has a 130 kW spindle that may draw 100-125A at typical operating loads. A formal NEC load calculation based on the actual panel schedule is required immediately (Week 1) to determine whether a utility service upgrade is needed — this is a potential schedule-critical path item.
 
 ---
 
@@ -218,46 +229,80 @@ The floor is already well-populated with the following major equipment zones (al
 
 ### CNC 1 Placement Assessment
 
-**Preliminary recommendation: Generally agree with suggested location, with adjustments.**
+**Recommendation: AGREE with suggested location, with adjustments. ✅**
 
-Rationale:
-- Clustering CNC machines together makes sense for shared infrastructure (compressed air, coolant, DI water, chip management)
-- Proximity to existing CNC zone enables a unified thermal control enclosure covering all precision machines
-- Close to raw material storage — critical for thermal equilibrium of stock before machining
-- Close to Q.C. Lab for quick inspection turnaround
+**Rationale — Why the upper-left CNC cluster location works:**
+- Clustering CNC machines together makes sense for shared infrastructure — compressed air drops, coolant supply lines, DI water, and chip management all become more efficient when centralized rather than distributed
+- Proximity to the existing CNC zone (DMG Mori machines, Makino, HAAS) enables a **unified thermal control enclosure** covering all precision machines. One enclosure is far more cost-effective than two.
+- Close to raw material storage — this is critical for thermal equilibrium. Bar stock or billets brought in from outside at ambient temperature must stabilize to room temperature before machining. At 5-micron tolerances, even a few degrees of thermal differential in the workpiece will cause dimensional drift during the cut cycle.
+- Close to Q.C. Lab (Mitutoyo CMM, granite table, Faro Arm) for quick inspection turnaround — reduces WIP transport distance
+- Close to existing electrical room — shorter conduit runs for the 30A/480V circuit
 
 **Proposed adjustments:**
-- Ensure minimum 36" clearance on all sides, with expanded clearance on PH 150 pallet load/unload side
-- Orient machine for optimal rigging path from building entry
-- Verify slab adequacy at this specific location; may need isolated machine pad
-- Plan for chip conveyor routing to a central chip collection point
-- Co-locate raw material storage within the same thermal zone — material must stabilize to room temperature before machining to maintain 5-micron tolerances
+- **Service clearance:** Ensure minimum 36" clearance on all sides per DMG Mori installation requirements. Expand to **48" minimum on the PH 150 pallet load/unload side** — operators will need room for pallet staging carts, and the PH 150 setup station needs unobstructed access. If Robo2Go automation is added in the future, this clearance becomes even more critical.
+- **Machine orientation:** Orient the machine so the chip conveyor discharge routes to a central chip collection point without crossing pedestrian traffic paths. The operator-facing side (control panel + PH 150 setup station) should face toward the main aisle for ergonomic access.
+- **Foundation:** Verify slab adequacy at this specific location (see Section 5.7). The DMU 40 PRO's one-piece gray cast iron bed requires a dead-flat, vibration-free surface. May need an isolated machine pad decoupled from the building slab.
+- **Chip management zone:** Designate floor space adjacent to CNC 1 (and the broader CNC cluster) for **segregated chip collection bins** — separate bins for each material type (aluminum, steel, stainless, titanium). Mixed chips contaminate recycling streams and can cause quality issues. Color-code and label bins clearly.
+- **Material co-location:** Raw material storage (bar rack, billets, pre-cut blanks) **must be inside the same thermally controlled zone** as the CNC machines. Material stored at a different temperature will expand or contract mid-process, making 5-micron tolerances unachievable.
+- **Future-proofing:** Pull oversized conduit and leave spare electrical capacity at the machine location for potential Robo2Go Milling automation add-on. Cheaper to install now than retrofit later.
 
 ### TVAC 1 Placement Assessment
 
-**Preliminary recommendation: [TO BE FINALIZED]**
+**Recommendation: AGREE with suggested location — workable with caveats. ✅**
 
-Key considerations:
-- Proximity to exterior wall preferred for LN2 piping runs and vacuum pump exhaust
-- Need clear rigging path for chamber installation
-- Need space for door to fully open and test article loading
-- Must not block egress routes
+**Rationale — Why the upper-left area near the electrical room works:**
+- **Proximity to exterior wall** is a strong positive — this enables shorter LN2 piping runs from the exterior bulk tank, easier vacuum pump exhaust routing directly through the wall, and better ventilation options in an O2 depletion scenario
+- **Adjacent to electrical room** — beneficial for the 80A/208V circuit and step-down transformer installation. Shorter conduit runs reduce cost and voltage drop.
+- **Large open area** — appears to have sufficient footprint for a Rigel-class chamber (8-16 ft) plus service clearance on all sides
+- **Within the yellow build-out zone** — does not conflict with existing fixed equipment
+
+**Key requirements for this location:**
+- **Door swing clearance:** The Rigel chamber has a full-opening door. For a 10-12 ft diameter chamber, the door swing radius could be 5-6 ft or more. Confirm exact model dimensions with procurement and ensure no obstructions within the door arc.
+- **Test article loading path:** Need a clear, straight path from the assembly/test area to TVAC 1 for loading cart or crane access. Test articles (satellite components/subsystems) on loading carts require smooth, unobstructed floor.
+- **Vacuum pump location:** Roughing pumps and cryopumps are typically floor-mounted adjacent to the chamber. Allow 6-8 ft on the pump side for pump skid, exhaust piping, and maintenance access.
+- **LN2 piping penetration:** Identify the wall penetration point for vacuum-insulated piping from the exterior bulk tank. This wall penetration should be as close to TVAC 1 as possible.
+- **Structural assessment:** TVAC chambers are extremely heavy — a Rigel in the 10-12 ft range may weigh 10,000-20,000+ lbs. Point-load analysis required at this specific location (see Section 5.7).
+- **Egress:** Confirm that the chamber does not block any required egress routes from the electrical room or other occupied spaces.
 
 ### TVAC 2 Placement Assessment
 
-**Preliminary recommendation: Consider relocating closer to an exterior wall.**
+**Recommendation: RELOCATE — move closer to an exterior wall. ⚠️ This is our strongest pushback on the production team's plan.**
 
-Concerns with current suggested location:
-- Deep interior placement near the kitchen and occupied areas raises LN2 safety concerns
-- Longer LN2 piping runs increase cost and thermal losses
-- Vacuum pump exhaust routing more complex from interior
-- In an O2 depletion event, an interior location is harder to ventilate
+**Problems with the current suggested location (center-right, near kitchen):**
 
-**Alternative locations to evaluate:**
-- [TBD — need to assess available space along exterior walls]
+1. **LN2 Safety — this is the primary concern.** The suggested location places a major cryogenic system in the most populated interior area of the building, adjacent to the kitchen and occupied workspaces. Liquid nitrogen expands 695:1 when vaporizing. In a leak event at this interior location:
+   - Oxygen is displaced in the area farthest from exterior walls and ventilation
+   - The kitchen and nearby workbenches are occupied areas — personnel exposure risk is highest here
+   - Emergency ventilation is most difficult to achieve at the building's interior
+   - N2 gas initially pools at floor level before mixing — seated workers at desks/benches are at greatest risk
 
-### ⚠️ Open Item
-- The "yellow highlighted" area on the layout appears to represent the new/unused build-out zone — this needs confirmation from the production team.
+2. **Infrastructure cost.** Vacuum-insulated LN2 piping is expensive (~$150-300/linear foot installed). The run from an exterior bulk tank to the building's center is significantly longer than to an exterior wall location. Every additional foot of piping adds cost and introduces more joints that could develop leaks over time. Thermal losses in longer piping runs also increase LN2 consumption.
+
+3. **Vacuum pump exhaust routing.** Roughing pump exhaust must be vented to the exterior. From the center of the building, this requires a long exhaust run — either overhead or at floor level — routed around existing equipment. This adds cost, complexity, and potential maintenance issues.
+
+4. **Rigging complexity.** Getting a chamber that is potentially 8-16 ft in diameter into a tight interior location surrounded by existing equipment, the kitchen, WIP racks, and work benches is a logistical challenge. The rigging path must thread through the occupied shop floor without disrupting fixed equipment.
+
+**Proposed alternative — relocate TVAC 2 to an exterior wall location:**
+
+- **Preferred:** Along the same wall as TVAC 1 (upper-left / left wall) if space permits. This creates a **unified TVAC zone** with enormous advantages:
+  - Single LN2 piping trunk line from the exterior tank that branches to both chambers — dramatically reduces piping cost
+  - Shared O2 monitoring system and safety infrastructure (PPE station, emergency procedures, ventilation)
+  - Shared vacuum pump exhaust routing through the same wall section
+  - Single safety zone to manage rather than two separate zones on opposite sides of the building
+  - Simplified operator workflow — TVAC technicians work in one area rather than walking across the shop
+
+- **Alternative:** Along the lower/south exterior wall if the left wall lacks sufficient space. This is less ideal (longer LN2 piping, separate safety zone) but still far preferable to the interior location.
+
+**Anticipated production team pushback and response:**
+- *"We want TVAC 2 near assembly/test for workflow."* — Understood, but the safety, infrastructure cost ($30K-$50K+ in additional piping and exhaust routing), and rigging logistics strongly favor an exterior wall location. Test article transport distance is a minor inconvenience compared to the risks and costs of an interior cryogenic installation. A clear aisle with a loading cart solves the workflow concern.
+
+**⚠️ Action Required:** Schedule a placement review meeting with production area owners to discuss TVAC 2 relocation. Bring this analysis. If production insists on the interior location, we need to formally document the additional cost, safety requirements, and risk acceptance.
+
+### Open Items — Placement
+
+- **Yellow highlighted area on layout:** This appears to represent the designated new/unused build-out zone. Boundaries need confirmation from the production team before finalizing any placement.
+- **Rigging path:** Building entry points (roll-up doors), door dimensions, and clear height must be confirmed for all three machines. The TVAC chambers (potentially 8-16 ft diameter) may require disassembly or a special entry path.
+- **TVAC exact model/size:** The specific Rigel configuration ordered (8 ft, 10 ft, 12 ft, 16 ft?) must be confirmed with procurement — this drives floor space, structural loading, door swing clearance, and rigging requirements for both chambers.
 
 ---
 
@@ -265,25 +310,73 @@ Concerns with current suggested location:
 
 ### 5.1 Electrical
 
-**New Load Being Added:**
+**⚠️ POTENTIAL SHOWSTOPPER — Requires immediate investigation**
+
+#### New Load Being Added
 
 | Equipment | Circuit | Notes |
 |---|---|---|
 | CNC 1 | 30A / 480V / 3-phase | Standard industrial CNC circuit |
-| TVAC 1 | 80A / 208V / 1-phase | Likely requires 480V-to-208V step-down transformer |
-| TVAC 2 | 80A / 208V / 1-phase | Likely requires 480V-to-208V step-down transformer |
+| TVAC 1 | 80A / 208V / 1-phase | Requires 480V-to-208V step-down transformer |
+| TVAC 2 | 80A / 208V / 1-phase | Requires 480V-to-208V step-down transformer |
 
-**Total New Load:** ~190A equivalent (varies with duty cycle and power factor)
+#### Existing Equipment — Estimated Electrical Load Analysis
 
-**Concern:** Building has 500A @ 480V total service. Existing machines (8+ CNC machines, compressors, HVAC, lighting, etc.) likely consume 250-350A+. Adding 190A of new load may push us near or over capacity.
+The following estimates are based on manufacturer specifications and industry-standard demand factors. **These are estimates only — actual panel schedule must be obtained for a formal NEC load calculation.**
 
-**Action Required:**
-- Obtain existing panel schedule and perform full electrical load calculation
-- Engage licensed electrician for load study
-- If over capacity: budget for utility service upgrade ($15K–$40K+ per industry estimates)
-- Recommend pulling oversized conduit and leaving spare breaker positions for future equipment additions — cheaper to do now than retrofit later
-- All circuits in rigid metallic conduit (RMC) or intermediate metallic conduit (IMC) per industrial standards
-- Transformer(s) needed for 480V → 208V conversion for TVAC circuits
+| Equipment | Spindle Power (kW) | Est. Breaker Size (A @ 480V) | Est. Running Load at 50-60% Demand (A) |
+|---|---|---|---|
+| **Makino MAG 3.EX** | 130 kW | 200A | 100–125A |
+| **DMG Mori CTX beta TC 4A** | ~35 kW (main) + 22 kW (mill) | 60–80A | 35–50A |
+| **DMG Mori DMC 75** | ~25–35 kW | 50–60A | 25–35A |
+| **DMG Mori DMU 40 PRO** (existing) | 32 kW | 40–50A | 25–30A |
+| **HAAS VF-2 #1** | ~15 kW | 40–50A | 20–25A |
+| **HAAS VF-2 #2** | ~15 kW | 40–50A | 20–25A |
+| **HAAS VF-6** | ~22 kW | 60–80A | 30–40A |
+| **Matsuura MX-850** | ~22–30 kW | 40–60A | 20–35A |
+| **Matsuura MX-330 PC-10** | ~15–22 kW | 30–40A | 15–25A |
+| **Building Systems** (lighting, HVAC, compressor, office, server room) | — | — | 50–80A |
+| | | | |
+| **Subtotal — Existing Equipment** | | **~560–670A connected** | **~340–470A running** |
+
+**Note on connected vs. running load:** Connected load (breaker total) always exceeds service size — that is normal. NEC allows demand factors because not all machines run at peak simultaneously. What matters is the **demand load** — the realistic running load at any given time.
+
+#### New Equipment Load
+
+| Equipment | Circuit | Est. Running Load (A equivalent @ 480V) |
+|---|---|---|
+| CNC 1 (DMU 40 PRO + PH 150) | 30A / 480V / 3-phase | 15–20A |
+| TVAC 1 | 80A / 208V / 1-phase (via transformer) | 50–60A equivalent |
+| TVAC 2 | 80A / 208V / 1-phase (via transformer) | 50–60A equivalent |
+| | | |
+| **Subtotal — New Equipment** | | **115–140A running** |
+
+#### Combined Load Assessment
+
+| Load Category | Low Estimate (A) | High Estimate (A) |
+|---|---|---|
+| Existing equipment running demand | 340 | 470 |
+| New equipment running demand | 115 | 140 |
+| **Combined running demand** | **455** | **610** |
+| **Building service capacity** | **500A** | **500A** |
+
+**⚠️ Assessment: We are at or over capacity.** Even with conservative demand factors, the combined running load of 455–610A against a 500A service puts us in the danger zone. If the Makino is running a heavy cut while both TVACs are in operation and other machines are active, we will exceed service capacity.
+
+#### Recommended Actions (Priority Order)
+
+1. **IMMEDIATE (Week 1):** Obtain the actual electrical panel schedule from the existing installation. Our estimates could be off by ±20%. We need real numbers.
+2. **IMMEDIATE (Week 1):** Engage a licensed electrician to perform a formal NEC Article 220 load calculation based on the actual panel schedule plus the new equipment.
+3. **IMMEDIATE (Week 1):** If the load study confirms we're near or over capacity, engage with PG&E to begin the utility service upgrade process. **PG&E service upgrades can take 8–12 weeks** to schedule and complete — this becomes a critical path item that could delay the entire project.
+4. **Order transformers early:** The TVAC circuits require 480V-to-208V step-down transformers. These are a long-lead procurement item — order in Week 1 upon project approval.
+5. **Design for future capacity:** Pull oversized conduit and leave spare breaker positions at the panel for future equipment additions. This is dramatically cheaper to do now ($2K-$5K incremental) than to retrofit later ($15K-$30K).
+6. **Consider load management:** If a service upgrade is not feasible on schedule, evaluate electrical interlocking or load shedding — e.g., prevent both TVACs from starting simultaneously, or interlock TVAC startup with Makino peak demand.
+7. **Install demand monitoring:** Regardless of outcome, install a real-time power monitoring system on the main service. This gives us ongoing visibility into actual demand and prevents surprise overloads.
+
+#### Budget Impact
+
+- If existing service is adequate: **$30K–$45K** (transformers, circuits, conduit, panel work)
+- If service upgrade required (500A → 800A or 1000A): **$45K–$65K+** (add PG&E upgrade, new main panel, larger feeders)
+- Transformer procurement (2× 480V-to-208V, ~45-75 kVA each): **$8K–$15K** (included in above totals)
 
 ### 5.2 Compressed Air
 
@@ -371,27 +464,83 @@ This is one of the largest infrastructure items on the project.
 
 ### 5.7 Foundations & Structural
 
-**⚠️ HIGH-PRIORITY CONCERN**
+**⚠️ HIGH-PRIORITY CONCERN — On the critical path for the entire project**
 
-**The Issue:**
-- Building is on Pier 70 — a historic waterfront pier
-- 4" concrete slab is relatively thin for precision machinery
-- Pier substructure (likely timber piles and fill) may not provide the vibration isolation and settlement stability required for 5-micron CNC machining
-- Heavy TVAC chambers add concentrated point loads
+#### The Problem
 
-**Proposed Actions:**
-1. **Structural/geotechnical assessment** — Engage a licensed structural engineer to evaluate:
-   - Slab thickness and reinforcement at proposed machine locations
-   - Subgrade/substructure conditions (what's under the slab?)
-   - Floor flatness and levelness
-   - Point load capacity for each machine
-   - Vibration characteristics (ambient vibration survey recommended)
-2. **Potential Remediation:**
-   - Isolated machine foundations (independent concrete pads decoupled from the building slab)
-   - Vibration-dampening machine mounts (elastomeric or pneumatic isolators)
-   - Epoxy grout for precision leveling
-   - For extreme cases: micro-piled foundations beneath machine pads
-3. **Budget Impact:** Foundation work is a major cost variable — could range from $10K (minor grouting and leveling) to $60K+ (isolated pads with vibration isolation)
+This building sits on Pier 70 — a historic waterfront pier originally constructed for shipbuilding (Union Iron Works / Bethlehem Steel). The pier's substructure is fundamentally different from a standard industrial slab-on-grade on solid ground.
+
+**What we know:**
+- 4" concrete slab throughout the building
+- Pier substructure is likely timber piles and/or concrete piles driven into bay mud, with fill material and a concrete cap
+- Building was originally designed for heavy industrial use (shipbuilding), which is a potential positive — the slab may be more robust than the 4" specification suggests in certain areas
+- We are installing a CNC machine that holds **5-micron positioning accuracy** and TVAC chambers that may weigh **10,000–20,000+ lbs each**
+
+#### Why This Matters for the CNC
+
+To put 5 microns in perspective: that is roughly **1/15th the diameter of a human hair**. At this tolerance level, the machine bed must be dead flat, dead stable, and isolated from vibration sources.
+
+The DMU 40 PRO has a one-piece gray cast iron bed and direct-driven ball screws specifically engineered for rigidity — but that rigidity assumes the floor underneath is not moving. On a pier structure, we face:
+
+- **Micro-settling** under concentrated loads as the subgrade compresses or shifts
+- **Vibration transmission** from the waterfront environment (tidal movement, wind loading on the structure, vehicle traffic on adjacent streets/piers) and from other equipment through the structure
+- **Long-term drift** in floor levelness as the pier structure ages and shifts seasonally
+- **Seismic vulnerability** — San Francisco is in a high seismic zone; even minor seismic events can shift machine leveling
+
+The Makino MAG 3.EX specification sheet confirms this concern: Makino requires environmental conditions including a **"suitable industrial floor for machine stability"** to achieve quoted accuracies. A standard 6" slab on grade is their baseline — our 4" slab on a pier is below that standard.
+
+#### Why This Matters for the TVACs
+
+TVAC chambers don't care about microns — but they are extremely heavy. A Rigel-class chamber in the 10-12 ft range, with pumping system, thermal control unit, and platen, could weigh 10,000–20,000+ lbs. This creates:
+
+- **Concentrated point loads** on the slab through the chamber's support feet
+- **Dynamic loading** during door operation (the full-opening door on a large chamber is heavy and shifts the center of gravity when open)
+- **Potential for differential settlement** if the subgrade is not uniform at the chamber location
+
+#### Recommended Actions
+
+**Step 1 — Structural/Geotechnical Assessment (WEEK 1 — CRITICAL PATH)**
+
+Engage a licensed structural engineer (PE) with experience in waterfront/pier structures or Pier 70 specifically. The scope should include:
+
+1. **Slab evaluation** — Thickness, reinforcement schedule, condition, and load capacity at each proposed machine location. Non-destructive testing (GPR or coring) to verify actual reinforcement.
+2. **Substructure assessment** — What is beneath the slab? Timber piles, concrete piles, fill, bay mud? Has it been upgraded or reinforced by previous tenants?
+3. **Point-load analysis** — Can the slab support the concentrated loads from each machine at the proposed locations? Calculate safety factors.
+4. **Floor flatness and levelness survey** — Measure the slab surface at proposed machine locations per ASTM E1155 (FF/FL numbers). CNC machines require flat, level surfaces.
+5. **Ambient vibration survey** — Rent accelerometers and measure ambient vibration levels at proposed CNC locations over a 24-48 hour period. This captures vibration from other machines, building systems, and environmental sources (traffic, wind, tidal). Compare results to DMG Mori's installation requirements.
+
+**Step 2 — Foundation Design (Based on Assessment Results)**
+
+Most likely we will need one or more of the following, depending on findings:
+
+| Solution | When Used | Est. Cost |
+|---|---|---|
+| **Epoxy grout leveling pads** | Slab is structurally adequate but surface is not flat/level enough | $3K–$8K |
+| **Vibration-isolating machine mounts** | Ambient vibration exceeds CNC tolerance; used with or without new pads | $5K–$12K |
+| **Reinforced machine pads** (for TVACs) | Slab cannot support point loads at TVAC locations; pour reinforced concrete pads on existing slab | $8K–$20K |
+| **Isolated machine foundations** (for CNC) | Slab vibration or settling is unacceptable; pour independent concrete pads decoupled from building slab with vibration isolation joints | $15K–$30K |
+| **Micro-piled foundations** | Worst case — subgrade is inadequate; install steel micro-piles through the slab to bearing stratum, then pour machine pad on top | $30K–$60K+ |
+
+**Step 3 — Ongoing Monitoring**
+
+After installation, establish a periodic leveling check schedule for the CNC machines (quarterly recommended for the first year). Precision CNC machines require periodic releveling as foundations settle.
+
+#### The Upside
+
+There is a potential upside to the Pier 70 history. This building was constructed for **shipbuilding** — one of the heaviest industrial uses imaginable. The original builders may have designed the slab and substructure for loads far exceeding what modern CNC machines and TVAC chambers impose. The structural assessment may reveal that the existing structure is more robust than the 4" slab specification suggests — it may have been poured thicker or with heavier reinforcement in certain bays. Historic construction drawings, if available from the Port of San Francisco or Pier 70 development archives, would be extremely valuable.
+
+#### Budget Impact
+
+Foundation work is the **largest cost unknown** in this project:
+- **Best case:** Slab is adequate, needs only grouting and leveling — **$10K–$15K**
+- **Mid case:** Need isolated CNC pad + reinforced TVAC pads — **$25K–$40K**
+- **Worst case:** Need micro-piled foundations for CNC + reinforced pads for TVACs — **$50K–$60K+**
+
+The structural assessment (estimated cost: $5K–$10K for the PE engagement) tells us which scenario we're in. This assessment is **the single highest-priority action item** on the project because:
+1. Foundation design cannot begin without it
+2. Foundation pour requires cure time (minimum 7-14 days to adequate strength, 28 days to full strength)
+3. No machine can be placed until the foundation is ready
+4. CNC 1 arrives in **2 weeks** — if we need foundation work, we are already behind
 
 ---
 
@@ -534,29 +683,32 @@ The project has two parallel workstreams driven by equipment delivery dates:
 
 ### Risk #1: Electrical Capacity Insufficient
 
-**Risk:** The building's 500A/480V service may not have enough remaining capacity to support the new equipment, especially given 8+ existing CNC machines and building systems already on the panel.
+**Risk:** Our preliminary load analysis estimates combined running demand at 455–610A against a 500A/480V building service. The existing 8+ CNC machines (particularly the 130 kW Makino MAG 3.EX), building systems, and compressors likely consume 340–470A before the new equipment is added. Adding the new CNC and two TVACs pushes us to or beyond service capacity.
 
-**Impact:** HIGH — Could delay the entire project if a utility service upgrade is required (long lead time, high cost, utility company coordination).
+**Impact:** HIGH — If a utility service upgrade is required, PG&E scheduling alone can take 8–12 weeks. Combined with equipment procurement (new main panel, larger feeders, transformer), this could delay the entire project by 2–3 months. Estimated cost of a service upgrade: $15K–$40K+.
 
 **Mitigation:**
-- Perform electrical load study immediately (Week 1 priority)
-- Engage with PG&E early if upgrade may be needed
+- **IMMEDIATE:** Obtain actual panel schedule and perform formal NEC Article 220 load calculation (Week 1)
+- Engage with PG&E proactively — even before the load study is complete, initiate a conversation about potential upgrade timelines
 - Design new circuits with energy-efficient practices (VFDs, power factor correction)
-- Phase equipment startup to avoid simultaneous peak demand
-- Budget contingency for service upgrade ($15K–$40K)
+- Evaluate load shedding / electrical interlocking as a contingency if service upgrade cannot be completed on schedule (e.g., prevent both TVACs from starting simultaneously with Makino at peak demand)
+- Pull oversized conduit and leave spare breaker positions for future growth — this is dramatically cheaper now than retrofit later
+- Budget contingency for service upgrade in all project scenarios
 
 ### Risk #2: Foundation / Structural Inadequacy at Pier 70
 
-**Risk:** The 4" concrete slab on a historic pier may not provide adequate vibration isolation, settlement stability, or point-load capacity for 5-micron CNC machining and heavy TVAC chambers.
+**Risk:** The building sits on a historic waterfront pier with a 4" concrete slab over what is likely timber piles and fill — not slab-on-grade on solid ground. The DMU 40 PRO requires 5-micron positioning accuracy, which demands a dead-flat, vibration-free foundation. TVAC chambers weighing 10,000–20,000+ lbs create concentrated point loads the slab may not support. Ambient vibration from the waterfront environment (tidal, wind, traffic) may exceed CNC tolerance thresholds.
 
-**Impact:** HIGH — Could require extensive and expensive remediation (isolated pads, micro-piles), and if discovered late, would cause major schedule delays.
+**Impact:** HIGH — Foundation remediation (isolated pads, micro-piles) could add $30K–$60K+ to the budget and 3–4 weeks to the schedule. If discovered late — after the CNC arrives in 2 weeks — the machine sits idle while we pour and cure foundations, at significant cost to production.
 
 **Mitigation:**
-- Commission structural/geotechnical assessment before any other work begins
-- Include vibration survey (ambient measurement) at proposed machine locations
-- Budget for worst-case foundation work in contingency
-- Design machine mounting systems with adjustable leveling and vibration isolation as standard
-- Identify backup machine locations if preferred locations have structural issues
+- **IMMEDIATE:** Commission structural/geotechnical assessment in Week 1 — this is the single highest-priority action item because foundation design, pour, and cure time are on the critical path for CNC 1 installation
+- Include ambient vibration survey (24-48 hours of accelerometer data) at proposed CNC locations
+- Request historic construction drawings from Port of San Francisco / Pier 70 development archives — the original shipbuilding use may mean the slab is more robust than the 4" specification suggests
+- Budget for worst-case foundation work in contingency ($50K–$60K)
+- Design all machine mounting systems with adjustable leveling and vibration isolation as standard practice
+- Identify backup machine locations in case preferred locations have structural deficiencies
+- Establish post-installation leveling check schedule (quarterly for first year) to monitor for settling
 
 ### Risk #3: San Francisco Permitting Delays
 
@@ -682,7 +834,7 @@ The project has two parallel workstreams driven by equipment delivery dates:
 | Date | Author | Change Description |
 |---|---|---|
 | 2026-03-13 | Facilities Director | Initial draft — compiled from research and planning discussions |
-| | | |
+| 2026-03-13 | Facilities Director | **Major update:** Added detailed machine placement recommendations (CNC 1 approved with adjustments, TVAC 1 approved, TVAC 2 relocation recommended). Added full electrical load analysis with per-machine breakdown showing 455-610A demand vs 500A service — flagged as potential showstopper. Added comprehensive foundation/structural analysis for Pier 70 pier substructure including vibration concerns, remediation options with cost estimates, and critical path implications. Added Immediate Action Items section. |
 | | | |
 
 ---
